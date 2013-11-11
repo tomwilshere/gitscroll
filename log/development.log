@@ -1,0 +1,5 @@
+
+
+Started GET "/assets/rails.png" for 127.0.0.1 at 2013-11-11 16:09:01 +0000
+Connecting to database specified by database.yml
+Served asset /rails.png - 200 OK (5ms)
