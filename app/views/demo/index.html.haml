@@ -1,0 +1,7 @@
+%h1 Demo page
+%p for testing different things.
+%h3 States of file "#{@file}". Time elapsed: #{(@elapsedTime*1000).round(3)} ms
+- @fileCommits.each do |c|
+	%p
+	%b #{c.author}
+	=raw(CodeRay.scan(c.tree./(@file).data, :ruby).div)
