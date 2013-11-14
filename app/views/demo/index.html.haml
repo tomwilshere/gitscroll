@@ -1,7 +1,32 @@
 %h1 Demo page
 %p for testing different things.
-%h3 States of file "#{@file}". Time elapsed: #{(@elapsedTime*1000).round(3)} ms
-- @fileCommits.each do |c|
-	%p
-	%b #{c.author}
-	=raw(CodeRay.scan(c.tree./(@file).data, :ruby).div)
+%h3 States of file "#{@file}" Time elapsed: #{(@elapsedTime*1000).round(3)} ms
+%p
+	%button.btn.changeButtons#back
+		Previous commit
+	%button.btn.changeButtons#forward
+		Next commit
+
+- @fileCommits.each_with_index do |c, i|
+	-#hide all but current commit
+	- hidden_state = c.id != @initialCommitHash ? 'hidden' : ''
+	%div{:class => hidden_state, :id => c.id}
+		%h3 Commit info
+		%dl.dl-horizontal
+			%dt Commit
+			%dd= c.id.at(0..10)
+			%dt Message
+			%dd= c.message.at(0..80)
+			%dt Author
+			%dd= c.author
+			%dt At
+			%dd= c.date.to_s(:long)
+		%h3 File contents
+		%pre.code-block
+			%code
+				=c.tree./(@file).data
+
+:javascript
+	window.currentHash = "#{@initialCommitHash}"
+	var hash_array = #{raw @javascriptArrayOfHashes.to_json}
+

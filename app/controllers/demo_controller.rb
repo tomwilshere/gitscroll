@@ -7,5 +7,7 @@ class DemoController < ApplicationController
 		@fileCommits = repo.log("master", @file).reverse
 		endTime = Time.now
 		@elapsedTime = endTime - beginningTime
+		@javascriptArrayOfHashes = @fileCommits.map{|c| c.id}
+		@initialCommitHash = @fileCommits.last.id
 	end
 end

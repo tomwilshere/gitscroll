@@ -14,6 +14,9 @@ gem 'haml'
 #Syntax highligting
 gem 'coderay'
 
+#jquery mousewheel
+gem "jquery-mousewheel-rails"
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
