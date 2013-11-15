@@ -13,7 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.ui.all
-//= require twitter/bootstrap
+//= require bootstrap/bootstrap.min
 //= require jquery.mousewheel
 //= require highlight.pack
 //= require prettify/prettify

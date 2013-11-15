@@ -2,9 +2,9 @@
 %p Views a given file over time, highlighting changes.
 %h3 States of file "#{@file}" #{@fileCommits.size} commits processed. Time elapsed: #{(@elapsedTime*1000).round(3)} ms
 %p
-	%button.btn.changeButtons#back
+	%button.btn.btn-primary.changeButtons#back
 		Previous commit
-	%button.btn.changeButtons#forward
+	%button.btn.btn-primary.changeButtons#forward
 		Next commit
 
 - @fileCommits.each_with_index do |c, i|
