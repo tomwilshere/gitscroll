@@ -14,4 +14,6 @@
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require jquery.mousewheel
+//= require highlight.pack
+//= require_tree ../../../vendor/assets/javascripts/prettify
 //= require_tree .

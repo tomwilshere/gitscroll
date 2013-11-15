@@ -1,6 +1,6 @@
 %h1 Demo page
 %p for testing different things.
-%h3 States of file "#{@file}" Time elapsed: #{(@elapsedTime*1000).round(3)} ms
+%h3 States of file "#{@file}" #{@fileCommits.size} commits processed. Time elapsed: #{(@elapsedTime*1000).round(3)} ms
 %p
 	%button.btn.changeButtons#back
 		Previous commit
@@ -21,12 +21,17 @@
 			%dd= c.author
 			%dt At
 			%dd= c.date.to_s(:long)
+
 		%h3 File contents
 		%pre.code-block
-			%code
+			%code.prettyprint.linenums
 				=c.tree./(@file).data
+		%h3 Diff
+		%pre
+			%code.prettyprint.diff
+				= @diffs[i]
 
 :javascript
 	window.currentHash = "#{@initialCommitHash}"
-	var hash_array = #{raw @javascriptArrayOfHashes.to_json}
+	var hash_array = #{raw @hashArray.to_json}
 

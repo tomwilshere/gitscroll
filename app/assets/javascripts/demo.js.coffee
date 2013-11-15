@@ -3,6 +3,8 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 $(document).ready ->
+	# hljs.initHighlightingOnLoad()
+	prettyPrint();
 	setButtonStates(hash_array.indexOf(window.currentHash))
 
 $('.code-block').on "mousewheel", (e, delta, deltaX, deltaY) ->
