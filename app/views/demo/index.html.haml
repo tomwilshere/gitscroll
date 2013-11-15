@@ -1,5 +1,5 @@
-%h1 Demo page
-%p for testing different things.
+%h1 File scroll
+%p Views a given file over time, highlighting changes.
 %h3 States of file "#{@file}" #{@fileCommits.size} commits processed. Time elapsed: #{(@elapsedTime*1000).round(3)} ms
 %p
 	%button.btn.changeButtons#back
@@ -22,16 +22,22 @@
 			%dt At
 			%dd= c.date.to_s(:long)
 
+		%h3 Addition info
+		%p
+			= @additions[i].inspect
+
 		%h3 File contents
 		%pre.code-block
 			%code.prettyprint.linenums
 				=c.tree./(@file).data
+
 		%h3 Diff
-		%pre
+		%pre.code-block
 			%code.prettyprint.diff
-				= @diffs[i]
+				=@diffs[i]
 
 :javascript
 	window.currentHash = "#{@initialCommitHash}"
 	var hash_array = #{raw @hashArray.to_json}
+	var additions_array = #{raw @additions.to_json}
 

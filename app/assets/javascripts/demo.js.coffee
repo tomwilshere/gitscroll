@@ -4,8 +4,25 @@
 
 $(document).ready ->
 	# hljs.initHighlightingOnLoad()
-	prettyPrint();
+	prettyPrint(highlightLines)
 	setButtonStates(hash_array.indexOf(window.currentHash))
+
+highlightLines = ->
+	for commitAdditions, i in additions_array
+		hash = hash_array[i]
+		lineArray = $('#' + hash + ' ol').children().toArray()
+		if commitAdditions
+			for addition in commitAdditions
+				location = addition.location
+				length = addition.length
+				if length > 0
+					for line in [location..location + length - 1]
+						$(lineArray[line - 1]).addClass("addition")
+				else if length == 0
+					$(lineArray[location-1]).addClass("change")
+				else
+					$(lineArray[location-2]).addClass("deletion")
+
 
 $('.code-block').on "mousewheel", (e, delta, deltaX, deltaY) ->
 	if deltaY is 0
