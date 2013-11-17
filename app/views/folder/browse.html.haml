@@ -1,0 +1,10 @@
+%h1 Folder Scroll
+%p See the progression of folders from the start of the project.
+
+%p Processing took #{(@time*1000).round(3)} ms
+
+%h3 File Tree
+- @commits.each_with_index do |c,i|
+	- hidden_state = i != 0 ? 'hidden' : ''
+	%div{:class => hidden_state, :id => c.id }
+		= raw(@trees[i])
