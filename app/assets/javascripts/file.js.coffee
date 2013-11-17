@@ -22,6 +22,7 @@ highlightLines = ->
 					$(lineArray[location-1]).addClass("change")
 				else
 					$(lineArray[location-2]).addClass("deletion")
+	$('.code-block').removeClass("loading",2000)
 
 
 $('.code-block').on "mousewheel", (e, delta, deltaX, deltaY) ->

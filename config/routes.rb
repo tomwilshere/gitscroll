@@ -6,7 +6,7 @@ Gitscroll::Application.routes.draw do
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
 
-  match 'demo/*path' => 'demo#index'
+  match 'file/*path' => 'file#view'
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase

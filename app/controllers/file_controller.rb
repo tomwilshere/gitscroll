@@ -1,6 +1,6 @@
-class DemoController < ApplicationController
+class FileController < ApplicationController
 
-	def index
+	def view
 		beginningTime = Time.now
 		repo = Grit::Repo.new("/Users/tw310/cpp")
 		@file = params[:path]
@@ -36,6 +36,6 @@ class DemoController < ApplicationController
 			not_found("File '" + @file + "' not in git repository.")
 		end
 		@elapsedTime = endTime - beginningTime
-		@initialCommitHash = @fileCommits.first.id
+		@initialCommitHash = @fileCommits.last.id
 	end
 end
