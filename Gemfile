@@ -40,6 +40,12 @@ gem 'grit'
 
 gem 'jquery-rails'
 
+# protection
+gem 'guard'
+
+#live reload gem
+gem 'guard-livereload'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
