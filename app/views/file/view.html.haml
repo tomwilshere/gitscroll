@@ -7,6 +7,9 @@
 	%button.btn.btn-primary.changeButtons#forward
 		Next commit
 
+%h3 Timeline
+#timeline
+
 - @fileCommits.each_with_index do |c, i|
 	-#hide all but current commit
 	- hidden_state = c.id != @initialCommitHash ? 'hidden' : ''
@@ -40,4 +43,5 @@
 	window.currentHash = "#{@initialCommitHash}"
 	var hash_array = #{raw @hashArray.to_json}
 	var additions_array = #{raw @additions.to_json}
+	var timeline_object = #{raw @timelineObject.to_json}
 

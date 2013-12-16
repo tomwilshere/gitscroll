@@ -13,4 +13,5 @@
  *= require jquery.ui.all
  *= require_tree .
  *= require_tree ../../../vendor/assets/stylesheets/bootstrap
+ *= require timelineJS/timeline
  */

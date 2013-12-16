@@ -2,28 +2,19 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
+#Initialisers
 $(document).ready ->
 	# hljs.initHighlightingOnLoad()
 	prettyPrint(highlightLines)
 	setButtonStates(hash_array.indexOf(window.currentHash))
+	createTimeline()
 
-highlightLines = ->
-	for commitAdditions, i in additions_array
-		hash = hash_array[i]
-		lineArray = $('#' + hash + ' ol').children().toArray()
-		if commitAdditions
-			for addition in commitAdditions
-				location = addition.location
-				length = addition.length
-				if length > 0
-					for line in [location..location + length - 1]
-						$(lineArray[line - 1]).addClass("addition")
-				else if length == 0
-					$(lineArray[location-1]).addClass("change")
-				else
-					$(lineArray[location-2]).addClass("deletion")
-	$('.code-block').removeClass("loading",2000)
-
+#Event bindings
+$(document).keydown (e) ->
+	if e.keyCode is 37
+		back()
+	else if e.keyCode is 39
+		forward()
 
 $('.code-block').on "mousewheel", (e, delta, deltaX, deltaY) ->
 	if deltaY is 0
@@ -35,11 +26,50 @@ $('.code-block').on "mousewheel", (e, delta, deltaX, deltaY) ->
 		if deltaX != 0
 			e.preventDefault()
 
+$('#back').click ->
+	back()
+
+$('#forward').click ->
+	forward()
+
+
+#Utility functions
+highlightLines = ->
+	if additions_array != undefined
+		for commitAdditions, i in additions_array
+			hash = hash_array[i]
+			lineArray = $('#' + hash + ' ol').children().toArray()
+			if commitAdditions
+				for addition in commitAdditions
+					location = addition.location
+					length = addition.length
+					if length > 0
+						for line in [location..location + length - 1]
+							$(lineArray[line - 1]).addClass("addition")
+					else if length == 0
+						$(lineArray[location-1]).addClass("change")
+					else
+						$(lineArray[location-2]).addClass("deletion")
+		$('.code-block').removeClass("loading",2000)
+
 back = ->
 	changeCommit -1
 
 forward = ->
 	changeCommit 1
+
+jumpTo = (nextHash, fireTimelineEvent) ->
+	console.log "fireTimelineEvent " + fireTimelineEvent
+	nextIndex = hash_array.indexOf(nextHash)
+	currentHash = window.currentHash
+	if nextHash
+		$('#' + currentHash).toggleClass("hidden")
+		$('#' + nextHash).toggleClass("hidden")
+		window.currentHash = nextHash
+		console.log "jumpTo " + window.currentHash
+		if fireTimelineEvent
+			clickTimelineMarker(nextHash)
+	setButtonStates(nextIndex)
 
 setButtonStates = (currentIndex) ->
 	#enable all buttons
@@ -57,22 +87,20 @@ changeCommit = (next) ->
 	currentIndex = hash_array.indexOf(window.currentHash)
 	nextIndex = currentIndex + next
 	nextHash = hash_array[nextIndex]
-	if nextHash
-		$('#' + currentHash).toggleClass("hidden")
-		$('#' + nextHash).toggleClass("hidden")
-		window.currentHash = nextHash
+	jumpTo(nextHash, true)
 
-	setButtonStates(nextIndex)
+createTimeline = ->
+	createStoryJS({
+		type: 'timeline',
+		width: 'auto',
+		height: '220',
+		source: timeline_object,
+		embed_id: 'timeline'
+	})
+	$('.marker').click (disable) ->
+		if !disable
+			jumpTo(this.className.split(" ")[1])
 
-
-$(document).keydown (e) ->
-	if e.keyCode is 37
-		back()
-	else if e.keyCode is 39
-		forward()
-
-$('#back').click ->
-	back()
-
-$('#forward').click ->
-	forward()
+clickTimelineMarker = (hash) ->
+	console.log "clickTimelineMarker" + hash
+	$('.marker.' + hash).click(true)

@@ -3,10 +3,11 @@ class FolderController < ApplicationController
 	def browse
 		repo = Grit::Repo.new("/Users/tw310/cpp")
 		startTime = Time.now
-		@commits = repo.log("master").reverse
+		@commits = repo.log("master").reverse.take(10)
 		@trees = @commits.map{|c| treePrint(c.tree)}
 		endTime = Time.now
 		@time = endTime - startTime
+		@hashArray = @commits.map{|c| c.id}
 	end
 
 	def treePrint(tree)

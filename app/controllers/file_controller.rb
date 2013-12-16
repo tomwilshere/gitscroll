@@ -8,11 +8,14 @@ class FileController < ApplicationController
 			@file += "." + params[:format]
 		end
 		@fileCommits = repo.log("master", @file).reverse
+		if @fileCommits.size == 0
+			not_found("File '" + @file + "' not in git repository.")
+		end
 		@hashArray = @fileCommits.map{|c| c.id}
 		@diffs = []
 		@additions = []
+		timelineDates = []
 		@fileCommits.each_with_index do |c,i|
-			puts i
 			if i > 0
 				diff = repo.diff(@fileCommits[i-1].id,c.id,@file).first.diff
 				@diffs[i] = diff
@@ -29,12 +32,24 @@ class FileController < ApplicationController
 					@additions[i].push(addition)
 				end
 			end
+
+			#create Timeline date object
+			date = {}
+			date[:startDate] = c.date
+			date[:endDate] = c.date
+			date[:headline] = c.message
+			date[:classname] = c.id
+			timelineDates.push date
+
 		end
 
+		timeline = {}
+		timeline[:type] = "default"
+		timeline[:date] = timelineDates
+		@timelineObject = {}
+		@timelineObject[:timeline] = timeline
+
 		endTime = Time.now
-		if @fileCommits.size == 0
-			not_found("File '" + @file + "' not in git repository.")
-		end
 		@elapsedTime = endTime - beginningTime
 		@initialCommitHash = @fileCommits.last.id
 	end
