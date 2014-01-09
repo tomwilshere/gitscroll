@@ -91,7 +91,8 @@ changeCommit = (next) ->
 	currentIndex = hash_array.indexOf(window.currentHash)
 	nextIndex = currentIndex + next
 	nextHash = hash_array[nextIndex]
-	jumpTo(nextHash, true)
+	if nextHash != undefined
+		jumpTo(nextHash, true)
 
 createTimeline = ->
 	createStoryJS({
