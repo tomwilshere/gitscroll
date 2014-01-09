@@ -12,7 +12,6 @@ class FileController < ApplicationController
 		@diffs = []
 		@additions = []
 		@fileCommits.each_with_index do |c,i|
-			puts i
 			if i > 0
 				diff = repo.diff(@fileCommits[i-1].id,c.id,@file).first.diff
 				@diffs[i] = diff
