@@ -8,6 +8,8 @@ $(document).ready ->
 	prettyPrint(highlightLines)
 	setButtonStates(hash_array.indexOf(window.currentHash))
 	createTimeline()
+	bindFlagClicks()
+
 
 #Event bindings
 $(document).keydown (e) ->
@@ -32,8 +34,12 @@ $('#back').click ->
 $('#forward').click ->
 	forward()
 
-
 #Utility functions
+bindFlagClicks = ->
+	$('.flag').click (e) ->
+		flagHash = $(e.delegateTarget.parentElement).attr('class').split(" ")[1]
+		jumpTo(flagHash)
+
 highlightLines = ->
 	if additions_array != undefined
 		for commitAdditions, i in additions_array
@@ -59,14 +65,12 @@ forward = ->
 	changeCommit 1
 
 jumpTo = (nextHash, fireTimelineEvent) ->
-	console.log "fireTimelineEvent " + fireTimelineEvent
 	nextIndex = hash_array.indexOf(nextHash)
 	currentHash = window.currentHash
 	if nextHash
 		$('#' + currentHash).toggleClass("hidden")
 		$('#' + nextHash).toggleClass("hidden")
 		window.currentHash = nextHash
-		console.log "jumpTo " + window.currentHash
 		if fireTimelineEvent
 			clickTimelineMarker(nextHash)
 	setButtonStates(nextIndex)
@@ -97,10 +101,7 @@ createTimeline = ->
 		source: timeline_object,
 		embed_id: 'timeline'
 	})
-	$('.marker').click (disable) ->
-		if !disable
-			jumpTo(this.className.split(" ")[1])
+	$('.marker.' + window.currentHash + ' .flag').trigger("click")
 
 clickTimelineMarker = (hash) ->
-	console.log "clickTimelineMarker" + hash
-	$('.marker.' + hash).click(true)
+	$('.marker.' + hash + ' .flag').trigger("click")

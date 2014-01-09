@@ -5327,18 +5327,18 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 			}
 		}
 
-		function onKeypressNav(e) {
-			switch(e.keyCode) {
-				case 39:
-					// RIGHT ARROW
-					onNextClick(e);
-					break;
-				case 37:
-					// LEFT ARROW
-					onPrevClick(e);
-					break;
-			}
-		}
+		// function onKeypressNav(e) {
+		// 	switch(e.keyCode) {
+		// 		case 39:
+		// 			// RIGHT ARROW
+		// 			onNextClick(e);
+		// 			break;
+		// 		case 37:
+		// 			// LEFT ARROW
+		// 			onPrevClick(e);
+		// 			break;
+		// 	}
+		// }
 
 		function onTouchUpdate(e, b) {
 			if (slide_positions.length == 0) {
@@ -5797,7 +5797,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 
 			VMM.bindEvent(".nav-next", onNextClick);
 			VMM.bindEvent(".nav-previous", onPrevClick);
-			VMM.bindEvent(window, onKeypressNav, 'keydown');
+			// VMM.bindEvent(window, onKeypressNav, 'keydown');
 
 		}
 
@@ -9113,7 +9113,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 				}
 			},
 			ease: 					"easeInOutExpo",
-			duration: 				1000,
+			duration: 				300,
 			gmap_key: 				"",
 			language: 				VMM.Language
 		};
