@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  repo_remote_url: MyString
+  repo_local_url: MyString
+
+two:
+  name: MyString
+  repo_remote_url: MyString
+  repo_local_url: MyString

@@ -1,0 +1,27 @@
+<%= form_for(@project) do |f| %>
+  <% if @project.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
+
+      <ul>
+      <% @project.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="well">
+
+    <div class="form-group">
+      <%= f.label :name %><br />
+      <%= f.text_field :name, :class => "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :repo_remote_url %><br />
+      <%= f.text_field :repo_remote_url, :class => "form-control" %>
+    </div>
+    <div class="actions">
+      <%= f.submit :class => "btn btn-submit" %>
+    </div>
+  </div>
+<% end %>
