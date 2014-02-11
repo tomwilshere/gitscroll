@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  include ProjectsHelper
   # GET /projects
   # GET /projects.json
   def index
@@ -13,13 +14,51 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.json
   def show
+    view = "show"
     @project = Project.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @project }
+    @repo = Rugged::Repository.new(@project.repo_local_url)
+    @object = @repo.lookup(@repo.head.target).tree
+    
+    @path = ""
+    
+    if params[:path] != nil
+      @path = params[:path]
+      if params[:format]
+        @path = @path + "." + params[:format]
+      end
+      @object = @repo.lookup(@object.path(@path)[:oid])
+      @parent_path = generate_parent_path(@path)
     end
+
+    @fileCommits = Hash.new
+
+    if @object.type == :blob
+      view = "show_file"
+      walker = Rugged::Walker.new(@repo)
+      walker.push(@repo.head.target)
+      walker.each do |commit|
+        file = nil
+        begin
+          file = commit.tree.path(@path)
+        rescue
+
+        end
+        if file != nil
+          @fileCommits[commit.oid] = {:commit => commit, :file_contents => @repo.lookup(file[:oid]).content}
+        end
+
+      end
+
+      @initial_commit_hash = @fileCommits.keys.first
+
+    elsif @path != ""
+      @path += "/"
+    end
+
+    puts @fileCommits.size
+    render view
   end
+
 
   # GET /projects/new
   # GET /projects/new.json
@@ -42,7 +81,7 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(params[:project])
 
-    @project.repo_local_url = Project.create_local_repo(@project)
+    @project.init
 
     respond_to do |format|
       if @project.save

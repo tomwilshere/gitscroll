@@ -1,0 +1,46 @@
+%p#notice= notice
+%p
+  %b Name:
+  = @project.name
+%p
+  %b Repo remote url:
+  = @project.repo_remote_url
+%p
+  %b Repo local url:
+  = @project.repo_local_url
+= link_to 'Edit', edit_project_path(@project)
+|
+= link_to 'Back', projects_path
+
+-# %h2 Commit Information
+-# %dl
+-#   %dt Message
+-#   %dd= @commit.message
+-#   %dt time
+-#   %dd= @commit.time
+
+%h2 Repo contents
+
+%table.table.table-hover
+  %thead
+    %th Name
+
+  %tbody
+    - if @parent_path != nil
+      %tr
+        %td
+          = link_to "/projects/" + @project.id.to_s + "/" + @parent_path do
+            %span.glyphicon.glyphicon-folder-close.invisible
+            \..
+    - @object.each_tree do |tree|
+      %tr
+        %td
+          = link_to("/projects/" + @project.id.to_s + "/" + @path + tree[:name]) do
+            %span.glyphicon.glyphicon-folder-close
+            = tree[:name]
+    - @object.each_blob do |blob|
+      %tr
+        %td
+          = link_to("/projects/" + @project.id.to_s + "/" + @path + blob[:name]) do
+            %span.glyphicon.glyphicon-file
+            = blob[:name]

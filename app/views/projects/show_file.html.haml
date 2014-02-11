@@ -1,0 +1,39 @@
+%p
+	%button.btn.btn-primary.changeButtons#back
+		Previous commit
+	%button.btn.btn-primary.changeButtons#forward
+		Next commit
+
+
+- @fileCommits.each do |hash, file_commit|
+	-#hide all but current commit
+	- hidden_state = hash != @initial_commit_hash ? 'hidden' : ''
+	%div{:class => hidden_state, :id => hash}
+		%h3 Commit info
+		%dl.dl-horizontal
+			%dt Commit
+			%dd= hash.at(0..10)
+			%dt Message
+			%dd= file_commit[:commit].message.at(0..80)
+			%dt Author
+			%dd
+				= file_commit[:commit].author[:name]
+				= "(" + file_commit[:commit].author[:email] + ")"
+			%dt At
+			%dd= file_commit[:commit].author[:time].to_s(:long)
+
+		%h3 File contents
+		%pre.code-block
+			%code.prettyprint.linenums
+				=file_commit[:file_contents]
+
+		-# %h3 Diff
+		-# %pre.code-block
+		-# 	%code.prettyprint.diff
+		-# 		=@diffs[i]
+
+:javascript
+	window.currentHash = "#{@initial_commit_hash}"
+	var hash_array = #{raw @fileCommits.keys.reverse.to_json}
+	var additions_array = #{raw @additions.to_json}
+	var timeline_object = #{raw @timelineObject.to_json}
