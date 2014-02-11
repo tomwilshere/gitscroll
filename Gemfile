@@ -20,6 +20,10 @@ gem "jquery-mousewheel-rails"
 #jquery ui
 gem 'jquery-ui-rails'
 
+gem 'simplecov', :require => false, :group => :test
+
+gem 'rails_best_practices'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -37,6 +41,7 @@ end
 # gem 'twitter-bootstrap-rails'
 
 gem 'grit'
+gem 'rugged', git: 'git://github.com/libgit2/rugged.git', branch: 'development', submodules: true
 
 gem 'jquery-rails'
 
