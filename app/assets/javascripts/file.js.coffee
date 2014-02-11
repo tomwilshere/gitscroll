@@ -41,7 +41,7 @@ bindFlagClicks = ->
 		jumpTo(flagHash)
 
 highlightLines = ->
-	if additions_array != undefined
+	if typeof additions_array != "undefined"
 		for commitAdditions, i in additions_array
 			hash = hash_array[i]
 			lineArray = $('#' + hash + ' ol').children().toArray()

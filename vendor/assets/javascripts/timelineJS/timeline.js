@@ -927,7 +927,7 @@ if(typeof VMM != 'undefined') {
 					if (callback_function != null && callback_function != "") {
 						jQuery(element).animate(_att, {queue:_que, duration:_duration, easing:_ease, complete:callback_function} );
 					} else {
-						jQuery(element).animate(_att, {queue:_que, duration:_duration, easing:_ease} );
+						jQuery(element).animate(_att, {queue:_que, duration:0});
 					}
 				}
 			}
@@ -5109,8 +5109,8 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 				something:			0,
 				width:				720,
 				height:				400,
-				ease:				"easeInOutExpo",
-				duration:			1000,
+				ease:				"none",
+				duration:			0,
 				timeline:			false,
 				spacing:			15,
 				slider: {
@@ -9113,7 +9113,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 				}
 			},
 			ease: 					"easeInOutExpo",
-			duration: 				300,
+			duration: 				200,
 			gmap_key: 				"",
 			language: 				VMM.Language
 		};
