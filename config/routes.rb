@@ -1,4 +1,6 @@
 Gitscroll::Application.routes.draw do
+  resources :metrics
+
   resources :projects
 
   # The priority is based upon order of creation:

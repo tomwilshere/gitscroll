@@ -1,5 +1,7 @@
 class ProjectsController < ApplicationController
+
   include ProjectsHelper
+  include MetricsHelper
   # GET /projects
   # GET /projects.json
   def index
@@ -34,19 +36,33 @@ class ProjectsController < ApplicationController
 
     if @object.type == :blob
       view = "show_file"
-      walker = Rugged::Walker.new(@repo)
-      walker.push(@repo.head.target)
-      walker.each do |commit|
-        file = nil
-        begin
-          file = commit.tree.path(@path)
-        rescue
+      commitFiles = @project.commit_files.where(:path => @path)
 
-        end
-        if file != nil
-          @fileCommits[commit.oid] = {:commit => commit, :file_contents => @repo.lookup(file[:oid]).content}
-        end
+      @fileCommits = Hash[commitFiles.map{|cf| [cf.commit_id, {:commit => cf.commit, :file_contents => @repo.lookup(cf.git_hash).content}]}]
 
+      if commitFiles.size > 1
+        data_table = GoogleVisualr::DataTable.new
+        data_table.new_column('datetime', 'date')
+        # data_table.new_column('number', 'flog')
+        data_table.new_column('number', 'Number of lines')
+        data_table.new_column('number', 'wilt')
+        data_table.new_column('number', 'rubocop')
+        
+        metric_data = []
+
+        commitFiles.each do |cf|
+          commit = cf.commit
+          metrics = cf.file_metrics
+          metric_data.push([DateTime.parse(commit.date.to_s),
+                            metrics.where(:metric_id => 3).first.score,
+                            metrics.where(:metric_id => 2).first.score,
+                            metrics.where(:metric_id => 4).first.score])
+        end
+        puts "METRIC DATA: " + metric_data.to_s
+        data_table.add_rows(metric_data)
+
+        option = { width: "100%", height: 300, title: 'Metrics' }
+        @chart = GoogleVisualr::Interactive::LineChart.new(data_table,option)
       end
 
       @initial_commit_hash = @fileCommits.keys.first

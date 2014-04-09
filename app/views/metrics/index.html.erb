@@ -1,0 +1,25 @@
+<h1>Listing metrics</h1>
+
+<table class="table table-bordered table-striped">
+  <tr>
+    <th>Name</th>
+    <th>Extension list</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @metrics.each do |metric| %>
+  <tr>
+    <td><%= metric.name %></td>
+    <td><%= metric.extension_list %></td>
+    <td><%= link_to 'Show', metric %></td>
+    <td><%= link_to 'Edit', edit_metric_path(metric) %></td>
+    <td><%= link_to 'Destroy', metric, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Metric', new_metric_path %>

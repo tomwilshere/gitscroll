@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  commit: 
+  hash: MyString
+  path: MyString
+  contents: MyText
+
+two:
+  commit: 
+  hash: MyString
+  path: MyString
+  contents: MyText

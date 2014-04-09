@@ -7,6 +7,8 @@ gem 'rails', '3.2.8'
 
 gem 'sqlite3'
 
+# better server
+gem 'thin'
 
 # Haml > erb
 gem 'haml'
@@ -14,15 +16,17 @@ gem 'haml'
 #Syntax highligting
 gem 'coderay'
 
+#d3
+gem 'd3-rails'
+
+#google charts
+gem 'google_visualr'
+
 #jquery mousewheel
 gem "jquery-mousewheel-rails"
 
 #jquery ui
 gem 'jquery-ui-rails'
-
-gem 'simplecov', :require => false, :group => :test
-
-gem 'rails_best_practices'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -42,6 +46,13 @@ end
 
 gem 'grit'
 gem 'rugged', git: 'git://github.com/libgit2/rugged.git', branch: 'development', submodules: true
+
+# metrics!
+gem 'simplecov', :require => false, :group => :test
+gem 'rails_best_practices'
+gem 'flog'
+gem 'flay'
+gem 'rubocop'
 
 gem 'jquery-rails'
 

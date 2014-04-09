@@ -5,3 +5,4 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+Metric.create([{ name: 'flog', extension_list: 'rb'}, {name: 'wilt', extension_list: ''}, {name: 'num_lines', extension_list: ''}])

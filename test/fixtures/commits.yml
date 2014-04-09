@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  project: 
+  hash: MyString
+  message: MyString
+  author: 
+  date: 2014-02-16 11:15:58
+
+two:
+  project: 
+  hash: MyString
+  message: MyString
+  author: 
+  date: 2014-02-16 11:15:58

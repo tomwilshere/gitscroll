@@ -1,3 +1,7 @@
+- if @chart != nil
+	#chart
+	= render_chart(@chart, 'chart')
+
 %p
 	%button.btn.btn-primary.changeButtons#back
 		Previous commit
@@ -14,13 +18,13 @@
 			%dt Commit
 			%dd= hash.at(0..10)
 			%dt Message
-			%dd= file_commit[:commit].message.at(0..80)
+			%dd= file_commit[:commit].message #.at(0..80)
 			%dt Author
 			%dd
-				= file_commit[:commit].author[:name]
-				= "(" + file_commit[:commit].author[:email] + ")"
+				= file_commit[:commit].author.name
+				= "(" + file_commit[:commit].author.email + ")"
 			%dt At
-			%dd= file_commit[:commit].author[:time].to_s(:long)
+			%dd= file_commit[:commit].date.to_s(:long)
 
 		%h3 File contents
 		%pre.code-block

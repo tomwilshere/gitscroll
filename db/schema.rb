@@ -11,7 +11,57 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131216111544) do
+ActiveRecord::Schema.define(:version => 20140220102725) do
+
+  create_table "authors", :force => true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "commit_files", :force => true do |t|
+    t.string   "commit_id"
+    t.string   "git_hash"
+    t.string   "path"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "commit_files", ["commit_id"], :name => "index_commit_files_on_commit_id"
+  add_index "commit_files", ["git_hash"], :name => "index_commit_files_on_hash"
+
+  create_table "commits", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "git_hash"
+    t.string   "message"
+    t.integer  "author_id"
+    t.datetime "date"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "commits", ["author_id"], :name => "index_commits_on_author_id"
+  add_index "commits", ["git_hash"], :name => "index_commits_on_hash"
+  add_index "commits", ["project_id"], :name => "index_commits_on_project_id"
+
+  create_table "file_metrics", :force => true do |t|
+    t.string   "commit_file_id"
+    t.integer  "metric_id"
+    t.float    "score"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "file_metrics", ["commit_file_id"], :name => "index_file_metrics_on_file_id"
+  add_index "file_metrics", ["metric_id"], :name => "index_file_metrics_on_metric_id"
+
+  create_table "metrics", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+    t.string   "extension_list"
+  end
 
   create_table "projects", :force => true do |t|
     t.string   "name"
