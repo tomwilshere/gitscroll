@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
     view = "show"
     @project = Project.find(params[:id])
     @repo = Rugged::Repository.new(@project.repo_local_url)
-    @object = @repo.lookup(@repo.head.target).tree
+    @object = @repo.lookup(@repo.head.target.oid).tree
     
     @path = ""
     
@@ -56,7 +56,8 @@ class ProjectsController < ApplicationController
           metric_data.push([DateTime.parse(commit.date.to_s),
                             metrics.where(:metric_id => 3).first.score,
                             metrics.where(:metric_id => 2).first.score,
-                            metrics.where(:metric_id => 4).first.score])
+                            # metrics.where(:metric_id => 4).first.score
+                            ])
         end
         puts "METRIC DATA: " + metric_data.to_s
         data_table.add_rows(metric_data)
@@ -95,7 +96,7 @@ class ProjectsController < ApplicationController
   # POST /projects
   # POST /projects.json
   def create
-    @project = Project.new(params[:project])
+    @project = Project.new(project_params)
 
     @project.init
 
@@ -137,4 +138,11 @@ class ProjectsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  private
+
+  def project_params
+    params.require(:project).permit(:name, :repo_local_url, :repo_remote_url)
+  end
+
 end

@@ -40,7 +40,7 @@ class MetricsController < ApplicationController
   # POST /metrics
   # POST /metrics.json
   def create
-    @metric = Metric.new(params[:metric])
+    @metric = Metric.new(metric_params)
 
     respond_to do |format|
       if @metric.save
@@ -79,5 +79,12 @@ class MetricsController < ApplicationController
       format.html { redirect_to metrics_url }
       format.json { head :no_content }
     end
+  end
+
+
+  private
+
+  def metric_params
+    params.require(:metric).permit(:name, :extension_list)
   end
 end

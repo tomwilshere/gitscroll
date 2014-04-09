@@ -12,11 +12,11 @@ Gitscroll::Application.routes.draw do
 
   root :to => 'projects#index'
 
-  match 'file/*path' => 'file#view'
+  get 'file/*path', to: 'file#view'
 
-  match 'folder' => 'folder#browse'
+  get 'folder', to: 'folder#browse'
 
-  match 'projects/:id(/*path)' => 'projects#show'
+  get 'projects/:id(/*path)', to: 'projects#show'
 
 
 

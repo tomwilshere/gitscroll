@@ -27,14 +27,14 @@ module MetricsHelper
 		return lines.size > 0 ? lines.map{ |line| line[/\A */].size}.sum()/lines.size : nil
 	end
 
-	def rubocop(file)
-		tempFile = Tempfile.new("rubocop")
-		tempFile.write(file)
-		tempFile.rewind
-		res = `rubocop %{tempFile.path}`
-		puts res
-		return res.size
-	end
+	# def rubocop(file)
+	# 	tempFile = Tempfile.new("rubocop")
+	# 	tempFile.write(file)
+	# 	tempFile.rewind
+	# 	res = `rubocop %{tempFile.path}`
+	# 	puts res
+	# 	return res.size
+	# end
 
 	def generate_metrics(file)
 		metrics = Hash.new
@@ -62,8 +62,9 @@ module MetricsHelper
 							:extension_list => []},
 					:wilt => {:function => method(:wilt),
 							:extension_list => []},
-					:rubocop => {:function => method(:rubocop),
-							:extension_list => ["rb", "erb", "haml"]}}
+					# :rubocop => {:function => method(:rubocop),
+							# :extension_list => ["rb", "erb", "haml"]}
+				}
 	end
 
 end

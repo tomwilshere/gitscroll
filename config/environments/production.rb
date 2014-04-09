@@ -4,6 +4,11 @@ Gitscroll::Application.configure do
   # Code is not reloaded between requests
   config.cache_classes = true
 
+  config.eager_load = true
+
+  # Compress JavaScripts and CSS
+  config.assets.js_compressor = :uglifier
+
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
