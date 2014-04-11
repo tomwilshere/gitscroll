@@ -81,4 +81,20 @@ module ProjectsHelper
     	end
     end
 
+    def makeD3Network(tree, currentPath)
+        dataset = Hash.new
+        dataset[:nodes] = []
+        dataset[:edges] = []
+        dataset[:nodes].push(Hash[:id => tree.oid, :name => currentPath, :size => 6])
+        tree.walk(:postorder) do |root, entry|
+            dataset[:nodes].push(Hash[:id => entry[:oid], :name => entry[:name], :size => (entry[:type] == :blob)? 4:6])
+            if root == ""
+                dataset[:edges].push(Hash[:source => tree.oid, :target => entry[:oid]])
+            else
+                dataset[:edges].push(Hash[:source => tree.path(root[0..-2])[:oid], :target => entry[:oid]])
+            end
+        end
+        return dataset
+    end
+
 end

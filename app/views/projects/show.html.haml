@@ -19,6 +19,12 @@
 -#   %dt time
 -#   %dd= @commit.time
 
+%h2 File Network
+#chart-network
+%script
+  var dataset =
+  = @d3Network.html_safe
+
 %h2 Repo contents
 
 %table.table.table-hover

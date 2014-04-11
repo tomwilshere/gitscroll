@@ -72,6 +72,8 @@ class ProjectsController < ApplicationController
       @path += "/"
     end
 
+    @d3Network = makeD3Network(@object, @path.split("/").last).to_json
+
     puts @fileCommits.size
     render view
   end
