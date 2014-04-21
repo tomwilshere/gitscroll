@@ -109,6 +109,7 @@ GEM
     parser (2.1.7)
       ast (~> 1.1)
       slop (~> 3.4, >= 3.4.5)
+    pg (0.14.1)
     polyglot (0.3.4)
     posix-spawn (0.3.8)
     powerpack (0.0.9)
@@ -213,6 +214,7 @@ DEPENDENCIES
   jquery-mousewheel-rails
   jquery-rails
   jquery-ui-rails
+  pg
   rails (= 4)
   rails_best_practices
   rubocop
