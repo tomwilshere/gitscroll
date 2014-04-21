@@ -85,14 +85,13 @@ module ProjectsHelper
         dataset = Hash.new
         dataset[:nodes] = []
         dataset[:edges] = []
-        dataset[:nodes].push(Hash[:id => tree.oid, :name => currentPath, :size => 6])
+        dataset[:nodes].push(Hash[:id => tree.oid, :name => currentPath, :size => 12])
         tree.walk(:postorder) do |root, entry|
-            dataset[:nodes].push(Hash[:id => entry[:oid], :name => entry[:name], :size => (entry[:type] == :blob)? 4:6])
-            if root == ""
-                dataset[:edges].push(Hash[:source => tree.oid, :target => entry[:oid]])
-            else
-                dataset[:edges].push(Hash[:source => tree.path(root[0..-2])[:oid], :target => entry[:oid]])
-            end
+            parentOID = (root == "") ? tree.oid : tree.path(root[0..-2])[:oid]
+            nodeSize = (entry[:type] == :blob) ? 4 : 6
+            id = entry[:oid] + ((entry[:type] == :blob) ? SecureRandom.uuid : "")
+            dataset[:nodes].push(Hash[:id => id, :name => entry[:name], :size => nodeSize])
+            dataset[:edges].push(Hash[:source => parentOID, :target => id])
         end
         return dataset
     end

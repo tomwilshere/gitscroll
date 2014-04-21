@@ -1,9 +1,23 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
+# redraw function for panning and zooming
+redraw = () ->
+    vis.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+    return
+
+# drag event handler for fixing nodes
+dragstart = (d) ->
+    d3.select(this).classed("fixed", d.fixed = true)
+    d3.event.sourceEvent.stopPropagation()
+    return
+
+# right click event handler for unfixing nodes
+rightclick = (d) ->
+    d3.select(this).classed("fixed", d.fixed = false)
+    d3.event.preventDefault()
+    d3.event.sourceEvent.stopPropagation()
+    return
 
 width = 1000
-height = 500
+height = 400
 
 color = d3.scale.category10()
 
@@ -26,40 +40,53 @@ dataset.edges.forEach (e) ->
   return
 
 svg = d3.select("#chart-network")
-		.append("svg")
-		.attr("width", width)
-		.attr("height", height)
+        .append("svg")
+        .attr("width", $("#chart-network").width())
+        .attr("height", height)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("pointer-events", "all")
+        .call(d3.behavior.zoom().on("zoom", redraw));
+
+# resize svg when window resizes
+window.onresize = () ->
+    svg.attr("width", $("#chart-network").width())
+
+# add group for visible area to enable zooming
+vis = svg.append('svg:g')
 
 force = d3.layout.force()
-		  .nodes(dataset.nodes)
-		  .links(edges)
-		  .size([width,height])
-		  .start()
+          .nodes(dataset.nodes)
+          .links(edges)
+          .size([width,height])
+          .start()
 
-edges = svg.selectAll("line")
-		   .data(edges)
-		   .enter()
-		   .append("line")
-		   .style("stroke", "#ccc")
-		   .style("stroke-width", 1)
+drag = force.drag().on("dragstart", dragstart)
 
-nodes = svg.selectAll("circle")
-		   .data(dataset.nodes)
-		   .enter()
-		   .append("circle")
-		   .attr("r", (d) -> d.size)
-		   .style("fill", (d,i) -> color(i))
-		   .call(force.drag)
+edges = vis.selectAll("line")
+           .data(edges)
+           .enter()
+           .append("line")
+           .style("stroke", "#ccc")
+           .style("stroke-width", 1)
+
+nodes = vis.selectAll("circle")
+           .data(dataset.nodes)
+           .enter()
+           .append("circle")
+           .attr("r", (d) -> d.size)
+           .style("fill", (d,i) -> color(i))
+           .on("contextmenu", rightclick)
+           .call(force.drag)
 
 nodes.append("title")
-	 .text((d) -> d.name)
+     .text((d) -> d.name)
 
 force.on("tick", ->
-	edges.attr("x1", (d) -> d.source.x)
-	     .attr("y1", (d) -> d.source.y)
-	     .attr("x2", (d) -> d.target.x)
-	     .attr("y2", (d) -> d.target.y)
+    edges.attr("x1", (d) -> d.source.x)
+         .attr("y1", (d) -> d.source.y)
+         .attr("x2", (d) -> d.target.x)
+         .attr("y2", (d) -> d.target.y)
 
-	nodes.attr("cx", (d) -> d.x)
-	     .attr("cy", (d) -> d.y)
-	)
+    nodes.attr("cx", (d) -> d.x)
+         .attr("cy", (d) -> d.y)
+    )
