@@ -4,6 +4,10 @@ class Project < ActiveRecord::Base
 
   def init
   	require 'securerandom'
+  	
+  	# make repos directory if it doesn't exist
+  	Dir.mkdir("repos") if !exists?("repos")
+
   	directory = "repos/" + SecureRandom.uuid
   	Dir.mkdir(directory)
   	self.repo_local_url = directory
