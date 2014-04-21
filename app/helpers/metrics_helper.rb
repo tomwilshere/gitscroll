@@ -1,6 +1,6 @@
 module MetricsHelper
-	require 'FileUtils'
 	def flog(file)
+		require 'FileUtils'
 		require 'flog'
 		# flog some stuff
 	    old_stdin = $stdin
@@ -36,12 +36,30 @@ module MetricsHelper
 	# 	return res.size
 	# end
 
+	def comment_count(file)
+		count = 0
+		require 'syntax'
+		require 'boolean_ints'
+		tokenizer = Syntax.load("ruby")
+		file.split("\n").each do |line|
+			comment_found = false
+			tokenizer.tokenize(line) do |token|
+				if token.group == "comment"
+					comment_found = true
+				end
+			end
+			count = count + comment_found.to_i
+		end
+		return count
+	end
+
 	def generate_metrics(file)
 		metrics = Hash.new
 		metrics[:flog] = flog(file)
 		metrics[:num_lines] = num_lines(file)
 		metrics[:wilt] = wilt(file)
 		metrics[:rubocop] = rubocop(file)
+		metrics[:comment_count] = comment_count(file)
 		return metrics
 	end
 
