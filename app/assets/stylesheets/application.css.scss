@@ -18,9 +18,9 @@
 
  @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('<%= asset_path('glyphicons.eot'                            ) %>');
-  src: url('<%= asset_path('glyphicons.eot?#iefix'                     ) %>') format('embedded-opentype'), 
-       url('<%= asset_path('glyphicons.woff'                           ) %>') format('woff'), 
-       url('<%= asset_path('glyphicons.ttf'                            ) %>') format('truetype'), 
-       url('<%= asset_path('glyphicons.svg#glyphicons_halflingsregular') %>') format('svg');
+  src: font-url('glyphicons.eot');
+  src: font-url('glyphicons.eot?#iefix') format('embedded-opentype'), 
+       font-url('glyphicons.woff') format('woff'), 
+       font-url('glyphicons.ttf') format('truetype'), 
+       font-url('glyphicons.svg#glyphicons_halflingsregular') format('svg');
 }
