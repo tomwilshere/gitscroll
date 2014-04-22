@@ -25,4 +25,4 @@ production:
   pool: 5
   username: rails
   password: <%= begin IO.read("/home/unicorn/.dbpass") rescue "" end %>
-  socket: /tmp/mysql.sock
+  socket: /var/run/mysqld/mysqld.sock
