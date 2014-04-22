@@ -1,6 +1,6 @@
 module MetricsHelper
 	def flog(file)
-		require 'FileUtils'
+		require 'fileutils'
 		require 'flog'
 		# flog some stuff
 	    old_stdin = $stdin
