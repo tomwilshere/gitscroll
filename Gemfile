@@ -51,7 +51,7 @@ end
 # gem 'twitter-bootstrap-rails'
 
 gem 'grit'
-gem 'rugged', git: 'git://github.com/libgit2/rugged.git', branch: 'development', submodules: true
+gem 'rugged'#, git: 'git://github.com/libgit2/rugged.git', branch: 'development', submodules: true
 
 # metrics!
 gem 'simplecov', :require => false, :group => :test
