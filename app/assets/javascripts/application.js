@@ -18,7 +18,5 @@
 //= require highlight.pack
 //= require prettify/prettify
 //= require_tree ../../../vendor/assets/javascripts/prettify
-//= require timelineJS/embed
-//= require timelineJS/timeline
 //= require d3
 //= require_tree .

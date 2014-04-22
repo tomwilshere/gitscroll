@@ -12,6 +12,9 @@ end
 # better server
 gem 'thin'
 
+#faster links
+gem 'turbolinks'
+
 # Haml > erb
 gem 'haml'
 
