@@ -101,6 +101,8 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
 
     @project.init
+    # This is a hack to make it work - investigate asynchronous metric updating.
+    update_metrics(@project)
 
     respond_to do |format|
       if @project.save
