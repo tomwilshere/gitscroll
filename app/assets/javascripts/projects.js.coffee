@@ -19,7 +19,19 @@ rightclick = (d) ->
 width = 1000
 height = 400
 
-color = d3.scale.category10()
+min = d3.min(dataset.nodes, (d) -> d.score)
+max = d3.max(dataset.nodes, (d) -> d.score)
+
+color = (value) ->
+    console.log(value)
+    if (value == null) 
+        return "#ccc"
+    return red_green_scale(value)
+
+red_green_scale = d3.scale.sqrt()
+            .domain([0,0.5,1].map(d3.interpolate(min,max)))
+            .range(["green","yellow","red"])
+
 
 edges = []
 dataset.edges.forEach (e) ->
@@ -74,12 +86,12 @@ nodes = vis.selectAll("circle")
            .enter()
            .append("circle")
            .attr("r", (d) -> d.size)
-           .style("fill", (d,i) -> color(i))
+           .style("fill", (d,i) -> color(d.score))
            .on("contextmenu", rightclick)
            .call(force.drag)
 
 nodes.append("title")
-     .text((d) -> d.name)
+     .text((d) -> d.name + " " + d.score)
 
 force.on("tick", ->
     edges.attr("x1", (d) -> d.source.x)
