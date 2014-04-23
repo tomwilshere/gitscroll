@@ -44,9 +44,9 @@ class ProjectsController < ApplicationController
         data_table = GoogleVisualr::DataTable.new
         data_table.new_column('datetime', 'date')
         # data_table.new_column('number', 'flog')
-        data_table.new_column('number', 'Number of lines')
+        data_table.new_column('number', 'flog')
         data_table.new_column('number', 'wilt')
-        data_table.new_column('number', 'rubocop')
+        data_table.new_column('number', 'Num. lines')
         
         metric_data = []
 
@@ -54,9 +54,9 @@ class ProjectsController < ApplicationController
           commit = cf.commit
           metrics = cf.file_metrics
           metric_data.push([DateTime.parse(commit.date.to_s),
-                            metrics.where(:metric_id => 3).first.score,
+                            metrics.where(:metric_id => 1).first.score,
                             metrics.where(:metric_id => 2).first.score,
-                            # metrics.where(:metric_id => 4).first.score
+                            metrics.where(:metric_id => 3).first.score,
                             ])
         end
         puts "METRIC DATA: " + metric_data.to_s
