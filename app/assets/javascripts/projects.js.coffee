@@ -18,16 +18,28 @@ rightclick = (d) ->
 width = 1000
 height = 400
 
-min = d3.min(dataset.nodes, (d) -> d.score)
-max = d3.max(dataset.nodes, (d) -> d.score)
+metric_selector = d3.select("#metric_id_metric_name")
 
-color = (value) ->
-    if (value == null) 
-        return "#ccc"
-    return red_green_scale(value)
+mins = []
+maxs = []
+
+metric_selector.selectAll("option").each () ->
+  metric_id = this.value
+  mins[metric_id] = d3.min(dataset.nodes, (d) -> if (d.metrics && d.metrics[metric_id]) then d.metrics[metric_id] else null)
+  maxs[metric_id] = d3.max(dataset.nodes, (d) -> if (d.metrics && d.metrics[metric_id]) then d.metrics[metric_id] else null)
+
+current_metric_id = 1
+
+min = mins[current_metric_id]
+max = maxs[current_metric_id]
+
+color = (d) ->
+    if (d && d.metrics && d.metrics[current_metric_id])
+      return red_green_scale(d.metrics[current_metric_id])
+    return "#ccc"
 
 red_green_scale = d3.scale.sqrt()
-            .domain([0,0.5,1].map(d3.interpolate(min,max)))
+            .domain([0,0.5,1].map(d3.interpolate(min, max)))
             .range(["green","yellow","red"])
 
 
@@ -48,6 +60,17 @@ dataset.edges.forEach (e) ->
     target: targetNode
 
   return
+
+metric_selector = d3.select("#metric_id_metric_name")
+
+metric_selector.on("change", () ->
+  current_metric_id = this.value
+  min = mins[current_metric_id]
+  max = maxs[current_metric_id]
+  nodes.style("fill", (d) ->
+    return color(d)
+  )
+)
 
 svg = d3.select("#chart-network")
         .append("svg")
@@ -84,7 +107,7 @@ nodes = vis.selectAll("circle")
            .enter()
            .append("circle")
            .attr("r", (d) -> d.size)
-           .style("fill", (d,i) -> color(d.score))
+           .style("fill", (d) -> color(d))
            .on("contextmenu", rightclick)
            .call(force.drag)
 

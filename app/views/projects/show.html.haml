@@ -21,9 +21,7 @@
 
 %h2 File Network
 #chart-network
-%script
-  var dataset =
-  = @d3Network.html_safe
+= collection_select(:metric_id, :metric_name, Metric.all, :id, :name, {}, {:class => "input-sm"})
 
 %h2 Repo contents
 
@@ -50,3 +48,6 @@
           = link_to("/projects/" + @project.id.to_s + "/" + @path + blob[:name]) do
             %span.glyphicon.glyphicon-file
             = blob[:name]
+%script
+  var dataset =
+  = @d3Network.html_safe

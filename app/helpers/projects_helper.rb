@@ -89,16 +89,16 @@ module ProjectsHelper
         tree.walk(:postorder) do |root, entry|
             parentOID = (root == "") ? tree.oid : tree.path(root[0..-2])[:oid]
             nodeSize = (entry[:type] == :blob) ? 4 : 6
-            score = nil
+            metrics = Hash.new
             if CommitFile.exists?(entry[:oid])
-                metric = CommitFile.find(entry[:oid]).file_metrics.where(:metric_id => 2)
-                if !metric.empty?
-                    score = metric.first.score
+                file_metrics = CommitFile.find(entry[:oid]).file_metrics
+                file_metrics.each do |metric|
+                    metrics[metric.metric_id] = metric.score
                 end
             end
             # score = (entry[:type] == :blob && CommitFile.exists?(entry[:oid])) ? CommitFile.find(entry[:oid]).file_metrics.where(:metric_id => 1).first.score : nil
             id = entry[:oid] + ((entry[:type] == :blob) ? SecureRandom.uuid : "")
-            dataset[:nodes].push(Hash[:id => id, :name => entry[:name], :size => nodeSize, :score => score])
+            dataset[:nodes].push(Hash[:id => id, :name => entry[:name], :size => nodeSize, :metrics => metrics])
             dataset[:edges].push(Hash[:source => parentOID, :target => id])
         end
         return dataset
