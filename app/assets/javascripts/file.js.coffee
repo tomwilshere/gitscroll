@@ -7,9 +7,6 @@ $(document).ready ->
 	# hljs.initHighlightingOnLoad()
 	prettyPrint(highlightLines)
 	setButtonStates(hash_array.indexOf(window.currentHash))
-	createTimeline()
-	bindFlagClicks()
-
 
 #Event bindings
 $(document).keydown (e) ->
@@ -35,13 +32,9 @@ $('#forward').click ->
 	forward()
 
 #Utility functions
-bindFlagClicks = ->
-	$('.flag').click (e) ->
-		flagHash = $(e.delegateTarget.parentElement).attr('class').split(" ")[1]
-		jumpTo(flagHash)
 
 highlightLines = ->
-	if typeof additions_array != "undefined"
+	if additions_array != null
 		for commitAdditions, i in additions_array
 			hash = hash_array[i]
 			lineArray = $('#' + hash + ' ol').children().toArray()
@@ -64,15 +57,13 @@ back = ->
 forward = ->
 	changeCommit 1
 
-jumpTo = (nextHash, fireTimelineEvent) ->
+jumpTo = (nextHash) ->
 	nextIndex = hash_array.indexOf(nextHash)
 	currentHash = window.currentHash
 	if nextHash
 		$('#' + currentHash).toggleClass("hidden")
 		$('#' + nextHash).toggleClass("hidden")
 		window.currentHash = nextHash
-		if fireTimelineEvent
-			clickTimelineMarker(nextHash)
 	setButtonStates(nextIndex)
 
 setButtonStates = (currentIndex) ->
@@ -92,17 +83,4 @@ changeCommit = (next) ->
 	nextIndex = currentIndex + next
 	nextHash = hash_array[nextIndex]
 	if nextHash != undefined
-		jumpTo(nextHash, true)
-
-createTimeline = ->
-	createStoryJS({
-		type: 'timeline',
-		width: 'auto',
-		height: '220',
-		source: timeline_object,
-		embed_id: 'timeline'
-	})
-	$('.marker.' + window.currentHash + ' .flag').trigger("click")
-
-clickTimelineMarker = (hash) ->
-	$('.marker.' + hash + ' .flag').trigger("click")
+		jumpTo(nextHash)

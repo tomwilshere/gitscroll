@@ -22,7 +22,6 @@ min = d3.min(dataset.nodes, (d) -> d.score)
 max = d3.max(dataset.nodes, (d) -> d.score)
 
 color = (value) ->
-    console.log(value)
     if (value == null) 
         return "#ccc"
     return red_green_scale(value)
