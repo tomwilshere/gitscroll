@@ -13,7 +13,6 @@ dragstart = (d) ->
 rightclick = (d) ->
     d3.select(this).classed("fixed", d.fixed = false)
     d3.event.preventDefault()
-    d3.event.sourceEvent.stopPropagation()
     return
 
 width = 1000
