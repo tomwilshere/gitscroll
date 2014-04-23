@@ -72,7 +72,9 @@ class ProjectsController < ApplicationController
       @path += "/"
     end
 
-    @d3Network = makeD3Network(@object, @path.split("/").last).to_json
+    if @object.type == :tree
+      @d3Network = makeD3Network(@object, @path.split("/").last).to_json
+    end
 
     puts @fileCommits.size
     render view
