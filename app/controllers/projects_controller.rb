@@ -44,20 +44,25 @@ class ProjectsController < ApplicationController
         data_table = GoogleVisualr::DataTable.new
         data_table.new_column('datetime', 'date')
         # data_table.new_column('number', 'flog')
-        data_table.new_column('number', 'flog')
-        data_table.new_column('number', 'wilt')
-        data_table.new_column('number', 'Num. lines')
+        Metric.all.each do |metric|
+          data_table.new_column('number', metric.name)
+        end
         
         metric_data = []
 
         commitFiles.each do |cf|
           commit = cf.commit
           metrics = cf.file_metrics
-          metric_data.push([DateTime.parse(commit.date.to_s),
-                            metrics.where(:metric_id => 1).first.score,
-                            metrics.where(:metric_id => 2).first.score,
-                            metrics.where(:metric_id => 3).first.score,
-                            ])
+          file_metric_data = [DateTime.parse(commit.date.to_s)]
+          Metric.all.each do |metric|
+            individual_metric_data = metrics.where(:metric_id => metric.id)
+            if individual_metric_data.size > 0
+              file_metric_data.push(individual_metric_data.first.score)
+            else
+              file_metric_data.push(nil)
+            end
+          end
+          metric_data.push(file_metric_data)
         end
         puts "METRIC DATA: " + metric_data.to_s
         data_table.add_rows(metric_data)
