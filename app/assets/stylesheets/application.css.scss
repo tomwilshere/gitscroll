@@ -16,11 +16,11 @@
  *= require_tree .
  */
 
- @font-face {
+@font-face {
   font-family: 'Glyphicons Halflings';
   src: font-url('glyphicons.eot');
-  src: font-url('glyphicons.eot?#iefix') format('embedded-opentype'), 
-       font-url('glyphicons.woff') format('woff'), 
-       font-url('glyphicons.ttf') format('truetype'), 
-       font-url('glyphicons.svg#glyphicons_halflingsregular') format('svg');
+  src: url(font-path('glyphicons.eot') + '?#iefix') format('embedded-opentype'),
+       font-url('glyphicons.woff') format('woff'),
+       font-url('glyphicons.ttf')  format('truetype'),
+       url(font-path('glyphicons.svg') + '#glyphicons_halflingsregular') format('svg');
 }

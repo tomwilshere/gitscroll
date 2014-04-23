@@ -4,3 +4,4 @@ log/
 repos
 *.sqlite3
 turbulence/
+public/assets

@@ -1,16 +1,25 @@
 class Project < ActiveRecord::Base
   has_many :commits, dependent: :destroy
   has_many :commit_files, through: :commits
+  after_initialize :hash
+
+  # Have the model assign itself a unique hash folder if
+  # one is not already set.
+  def hash
+    require 'securerandom'
+    self.repo_local_url ||= "repos/#{SecureRandom.uuid}"
+  end
 
   def init
-  	require 'securerandom'
-  	
-  	# make repos directory if it doesn't exist
-  	Dir.mkdir("repos") if !Dir.exists?("repos")
-
-  	directory = "repos/" + SecureRandom.uuid
-  	Dir.mkdir(directory)
-  	self.repo_local_url = directory
-  	repo = Rugged::Repository.clone_at(self.repo_remote_url, directory)
+    # Make repos directory if it doesn't exist
+    Dir.mkdir("repos") if !Dir.exists?("repos")
+    Dir.mkdir self.repo_local_url
+    Rugged::Repository.clone_at(self.repo_remote_url, self.repo_local_url)
   end
+
+  # Verifies a local copy of the repo exists
+  def exists
+    Dir.exists? self.repo_local_url
+  end
+
 end
