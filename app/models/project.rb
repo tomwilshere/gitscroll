@@ -1,11 +1,11 @@
 class Project < ActiveRecord::Base
   has_many :commits, dependent: :destroy
   has_many :commit_files, through: :commits
-  after_initialize :hash
+  after_initialize :generate_hash
 
   # Have the model assign itself a unique hash folder if
   # one is not already set.
-  def hash
+  def generate_hash
     require 'securerandom'
     self.repo_local_url ||= "repos/#{SecureRandom.uuid}"
   end
