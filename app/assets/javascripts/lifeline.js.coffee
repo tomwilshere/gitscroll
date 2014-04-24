@@ -48,7 +48,14 @@ window.files = commit_groups.selectAll("rect")
 		.attr("y", (d, i) -> file_scale(d) * 5)
 		
 files.append("title")
-		.text((d) -> "File: " + d.path + " score: " + d.metrics[current_metric_id])
+		.text((d) ->
+			"File: " +
+			d.path +
+			" score: " +
+			d.metrics[current_metric_id] +
+			" commit message: " +
+			d3.select(this.parentNode.parentNode).datum().message
+			)
 
 update_file_scale = d3.scale.linear()
 	.domain([0, Object.size(file_ordering)])
