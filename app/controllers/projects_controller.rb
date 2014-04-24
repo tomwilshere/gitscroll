@@ -78,7 +78,7 @@ class ProjectsController < ApplicationController
     end
 
     if @object.type == :tree
-      @d3Network = makeD3Network(@object, @path.split("/").last).to_json
+      @commits = @project.commits.map{|c| c.tree_json }.to_json
     end
 
     puts @fileCommits.size

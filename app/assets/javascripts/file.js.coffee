@@ -2,6 +2,8 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
+return if window.hash_array == undefined
+
 #Initialisers
 $(document).ready ->
 	# hljs.initHighlightingOnLoad()
@@ -34,7 +36,7 @@ $('#forward').click ->
 #Utility functions
 
 highlightLines = ->
-	if additions_array != null
+	if window.additions_array != undefined
 		for commitAdditions, i in additions_array
 			hash = hash_array[i]
 			lineArray = $('#' + hash + ' ol').children().toArray()

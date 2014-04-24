@@ -33,8 +33,10 @@ module ProjectsHelper
     			rugged_commit.author[:name], 
     			rugged_commit.author[:email])
     		commit.date = rugged_commit.author[:time]
-    		commit.save
-    		update_commit_metrics(repo, rugged_commit)
+            commit.save
+            update_commit_metrics(repo, rugged_commit)
+            commit.tree_json = makeD3Network(commit, rugged_commit.tree, "/", count).to_json
+            commit.save
     		puts count
     		count = count + 1
     		puts ProjectsHelper.get_visited_blobs.size
@@ -81,27 +83,67 @@ module ProjectsHelper
     	end
     end
 
-    def makeD3Network(tree, currentPath)
+    def makeD3Network(commit, tree, currentPath, commitNumber)
         dataset = Hash.new
-        dataset[:nodes] = []
+        dataset[:hash] = commit[:git_hash]
+        dataset[:date] = commit[:date]
+        dataset[:message] = commit[:message]
+        dataset[:author] = commit.author
+        dataset[:commit_number] = commitNumber
+        nodes = []
         dataset[:edges] = []
-        dataset[:nodes].push(Hash[:id => tree.oid, :name => currentPath, :size => 12])
+        nodes.push(Hash[:id => tree.oid, :name => currentPath, :path => "", :size => 12])
         tree.walk(:postorder) do |root, entry|
             parentOID = (root == "") ? tree.oid : tree.path(root[0..-2])[:oid]
             nodeSize = (entry[:type] == :blob) ? 4 : 6
             metrics = Hash.new
+            path = ""
             if CommitFile.exists?(entry[:oid])
-                file_metrics = CommitFile.find(entry[:oid]).file_metrics
-                file_metrics.each do |metric|
+                cf = CommitFile.find(entry[:oid])
+                path = cf.path
+                cf.file_metrics.each do |metric|
                     metrics[metric.metric_id] = metric.score
                 end
             end
             # score = (entry[:type] == :blob && CommitFile.exists?(entry[:oid])) ? CommitFile.find(entry[:oid]).file_metrics.where(:metric_id => 1).first.score : nil
             id = entry[:oid] + ((entry[:type] == :blob) ? SecureRandom.uuid : "")
-            dataset[:nodes].push(Hash[:id => id, :name => entry[:name], :size => nodeSize, :metrics => metrics])
+            nodes.push(Hash[:id => id, :name => entry[:name], :path => path, :size => nodeSize, :metrics => metrics])
             dataset[:edges].push(Hash[:source => parentOID, :target => id])
         end
+        dataset[:nodes] = nodes.sort_by { |e| e[:path] }
         return dataset
+    end
+
+    def makeCommitData(project)
+        # repo = Rugged::Repository.new(project.repo_local_url)
+        # walker = Rugged::Walker.new(repo)
+        # walker.push(repo.head.target)
+        
+        commits = project.commits.each_with_index.map {|commit,i| {:hash => commit[:git_hash], :commit_number => i, :commit_files => createCommitFileObjects(commit.commit_files)}}
+
+
+
+        # walker.each do |ruggedCommit|
+        #     commit = Commit.find(ruggedCommit.oid)
+        #     new_commit_object = Hash.new
+        #     new_commit_object[:hash] = commit[:git_hash]
+        #     new_commit_object[:commit_files] = commit.commit_files.map { |commitFile| {:hash => commitFile[:git_hash], :path => commitFile[:path], :metrics => commitFile.file_metrics}}
+        #     commits.push(new_commit_object)
+        # end
+        return commits
+
+    end
+
+    def createCommitFileObjects(commit_files)
+        commit_files.map {|cf| {:hash => cf[:git_hash], :path => cf[:path], :metrics => createMetricObject(cf.file_metrics)}}
+    end
+
+    def createMetricObject(file_metrics) 
+        metrics = Hash.new
+        file_metrics.each do |metric|
+            metrics[metric.metric_id] = metric.score
+        end
+        return metrics
     end
 
 end

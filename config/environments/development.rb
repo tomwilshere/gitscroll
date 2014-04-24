@@ -33,4 +33,6 @@ Gitscroll::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  ActiveRecord::Base.logger.level = 1
 end

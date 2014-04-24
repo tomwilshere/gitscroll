@@ -1,3 +1,5 @@
+return if window.commits == undefined
+
 # redraw function for panning and zooming
 redraw = () ->
     vis.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
@@ -15,33 +17,41 @@ rightclick = (d) ->
     d3.event.preventDefault()
     return
 
+# metric_selector = d3.select("#metric_id_metric_name")
+
+# mins = []
+# maxs = []
+
+# metric_selector.selectAll("option").each () ->
+#   metric_id = this.value
+#   mins[metric_id] = d3.min(commits.map($.parseJSON)[0].nodes, (d) -> if (d.metrics && d.metrics[metric_id]) then d.metrics[metric_id] else null)
+#   maxs[metric_id] = d3.max(commits.map($.parseJSON)[0].nodes, (d) -> if (d.metrics && d.metrics[metric_id]) then d.metrics[metric_id] else null)
+
+# current_metric_id = 1
+
+# min = mins[current_metric_id]
+# max = maxs[current_metric_id]
+
+# color = (d) ->
+#   if (d && d.metrics && d.metrics[current_metric_id])
+#     return red_green_scale(d.metrics[current_metric_id])
+#   return "#ccc"
+
+# red_green_scale = d3.scale.sqrt()
+#             .domain([0,0.5,1].map(d3.interpolate(min, max)))
+#             .range(["green","yellow","red"])
+
+# metric_selector.on("change", () ->
+#   current_metric_id = this.value
+#   min = mins[current_metric_id]
+#   max = maxs[current_metric_id]
+#   nodes.style("fill", (d) -> color(d))
+# )
+
+dataset = commits.map($.parseJSON)[0]
+
 width = 1000
 height = 400
-
-metric_selector = d3.select("#metric_id_metric_name")
-
-mins = []
-maxs = []
-
-metric_selector.selectAll("option").each () ->
-  metric_id = this.value
-  mins[metric_id] = d3.min(dataset.nodes, (d) -> if (d.metrics && d.metrics[metric_id]) then d.metrics[metric_id] else null)
-  maxs[metric_id] = d3.max(dataset.nodes, (d) -> if (d.metrics && d.metrics[metric_id]) then d.metrics[metric_id] else null)
-
-current_metric_id = 1
-
-min = mins[current_metric_id]
-max = maxs[current_metric_id]
-
-color = (d) ->
-    if (d && d.metrics && d.metrics[current_metric_id])
-      return red_green_scale(d.metrics[current_metric_id])
-    return "#ccc"
-
-red_green_scale = d3.scale.sqrt()
-            .domain([0,0.5,1].map(d3.interpolate(min, max)))
-            .range(["green","yellow","red"])
-
 
 edges = []
 dataset.edges.forEach (e) ->
@@ -60,17 +70,6 @@ dataset.edges.forEach (e) ->
     target: targetNode
 
   return
-
-metric_selector = d3.select("#metric_id_metric_name")
-
-metric_selector.on("change", () ->
-  current_metric_id = this.value
-  min = mins[current_metric_id]
-  max = maxs[current_metric_id]
-  nodes.style("fill", (d) ->
-    return color(d)
-  )
-)
 
 svg = d3.select("#chart-network")
         .append("svg")
@@ -112,7 +111,7 @@ nodes = vis.selectAll("circle")
            .call(force.drag)
 
 nodes.append("title")
-     .text((d) -> d.name + " " + d.score)
+     .text((d) -> (if d.path then d.path else d.name) + " " + (if d.metrics && d.metrics[current_metric_id] then d.metrics[current_metric_id] else ""))
 
 force.on("tick", ->
     edges.attr("x1", (d) -> d.source.x)

@@ -19,8 +19,11 @@
 -#   %dt time
 -#   %dd= @commit.time
 
+%h2 Project Lifeline
+#chart-lifeline.chart
+
 %h2 File Network
-#chart-network
+#chart-network.chart
 = collection_select(:metric_id, :metric_name, Metric.all, :id, :name, {}, {:class => "input-sm"})
 
 %h2 Repo contents
@@ -49,5 +52,5 @@
             %span.glyphicon.glyphicon-file
             = blob[:name]
 %script
-  var dataset =
-  = @d3Network.html_safe
+  var commits =
+  = @commits.html_safe

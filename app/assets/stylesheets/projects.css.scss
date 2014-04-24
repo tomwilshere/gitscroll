@@ -10,25 +10,8 @@
 	width: 30px;
 }
 
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.x.axis path {
-  display: none;
-}
-
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
-#chart-network {
-	height: 402px;
-	border: 1px solid red;
-	border-radius: 5px;
+.chart {
+  height: 402px;
+  border: 1px solid red;
+  // border-radius: 5px;
 }
