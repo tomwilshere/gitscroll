@@ -23,9 +23,10 @@ red_green_scale = d3.scale.sqrt()
             .range(["green","yellow","red"])
 
 metric_selector.on("change", () ->
-  current_metric_id = this.value
+  window.current_metric_id = this.value
   min = mins[current_metric_id]
   max = maxs[current_metric_id]
   nodes.style("fill", (d) -> color(d))
+  files.style("fill", (d) -> color(d))
 )
 	

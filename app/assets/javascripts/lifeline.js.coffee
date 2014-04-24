@@ -22,9 +22,6 @@ commit_scale = d3.scale.linear()
 		.range([0, $("#chart-lifeline").width()])
 
 file_ordering = {}
-console.log(Object.size(file_ordering))
-file_ordering[".gitignore"] = 10
-console.log(Object.size(file_ordering))
 
 file_scale = (node) ->
 	if file_ordering[node.path] == undefined
@@ -36,8 +33,8 @@ commit_groups = svg.selectAll("g")
 		.enter()
 		.append("g")
 
-files = commit_groups.selectAll("rect")
-		.data((d,index) -> d.nodes.filter (n) -> n.size == 4 && n.metrics[current_metric_id])
+window.files = commit_groups.selectAll("rect")
+		.data((d,index) -> d.nodes.filter (n) -> n.size == 4 )#&& n.metrics[current_metric_id])
 		.enter()
 		.append("rect")
 		.style("fill", (d) -> color(d))
@@ -52,7 +49,7 @@ files.append("title")
 		.text((d) -> "File: " + d.path + " score: " + d.metrics[current_metric_id])
 
 update_file_scale = d3.scale.linear()
-	.domain([1, Object.size(file_ordering)])
+	.domain([0, Object.size(file_ordering)])
 	.range([0, $("#chart-lifeline").height()])
 
 files.attr("y", (d) -> update_file_scale(file_scale(d)))

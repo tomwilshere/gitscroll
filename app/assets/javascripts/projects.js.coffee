@@ -101,7 +101,7 @@ edges = vis.selectAll("line")
            .style("stroke", "#ccc")
            .style("stroke-width", 1)
 
-nodes = vis.selectAll("circle")
+window.nodes = vis.selectAll("circle")
            .data(dataset.nodes)
            .enter()
            .append("circle")
