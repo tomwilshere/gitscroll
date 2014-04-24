@@ -4,6 +4,17 @@
 
 require File.expand_path('../config/application', __FILE__)
 
+require 'bundler/setup'
+Bundler.require(:default)
+
+# require './resque-example-app'
+require 'resque/tasks'
+
+task "resque:setup" do
+      ENV['QUEUE'] = '*'
+end
+
+
 namespace :db do
 
   desc "Init any database repos that are not present"

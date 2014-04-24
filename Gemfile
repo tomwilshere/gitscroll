@@ -65,6 +65,9 @@ gem 'flay'
 gem 'rubocop'
 gem 'syntax'
 
+# background process job jandling
+gem 'resque'
+
 gem 'jquery-rails'
 
 # protection

@@ -108,11 +108,10 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
 
     @project.init
-    # This is a hack to make it work - investigate asynchronous metric updating.
-    update_metrics(@project)
 
     respond_to do |format|
       if @project.save
+        Resque.enqueue(MetricUpdater, @project.id)
         format.html { redirect_to @project, notice: 'Project was successfully created.' }
         format.json { render json: @project, status: :created, location: @project }
       else
@@ -142,6 +141,7 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1.json
   def destroy
     @project = Project.find(params[:id])
+    FileUtils.rm_rf Dir.glob(@project.repo_local_url)
     @project.destroy
 
     respond_to do |format|
