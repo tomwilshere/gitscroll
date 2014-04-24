@@ -17,9 +17,11 @@ svg = d3.select("#chart-lifeline")
 
 dataset = commits.map($.parseJSON)
 
+
+
 commit_scale = d3.scale.linear()
 		.domain([0, dataset.length])
-		.range([0, $("#chart-lifeline").width()])
+		.range([$("#chart-lifeline").width(), 0])
 
 file_ordering = {}
 
