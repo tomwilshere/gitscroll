@@ -15,7 +15,7 @@ svg = d3.select("#chart-lifeline")
         .attr("width", $("#chart-network").width())
         .attr("height", height)
 
-dataset = commits.map($.parseJSON)
+dataset = commits.map($.parseJSON).reverse().filter( (c) -> c != null)
 
 
 
@@ -36,14 +36,14 @@ commit_groups = svg.selectAll("g")
 		.append("g")
 
 window.files = commit_groups.selectAll("rect")
-		.data((d,index) -> d.nodes.filter (n) -> n.size == 4 )#&& n.metrics[current_metric_id])
+		.data((d) -> d.nodes.filter (n) -> n.size == 4)
 		.enter()
 		.append("rect")
 		.style("fill", (d) -> color(d))
 		.attr("height", 2)
 		.attr("width", 2)
 		.attr("x", (d, i) -> 
-			commit_scale(d3.select(this.parentNode).datum().commit_number-1)
+			commit_scale(d3.select(this.parentNode).datum().commit_number)
 		)
 		.attr("y", (d, i) -> file_scale(d) * 5)
 		

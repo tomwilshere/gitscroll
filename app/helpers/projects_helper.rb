@@ -22,6 +22,7 @@ module ProjectsHelper
     def update_metrics(project)
     	repo = Rugged::Repository.new(project.repo_local_url)
     	walker = Rugged::Walker.new(repo)
+        walker.sorting(Rugged::SORT_DATE)
     	walker.push(repo.head.target)
     	count = 1
     	walker.each do |rugged_commit| 
@@ -33,6 +34,7 @@ module ProjectsHelper
     			rugged_commit.author[:name], 
     			rugged_commit.author[:email])
     		commit.date = rugged_commit.author[:time]
+            puts commit.date
             commit.save
             update_commit_metrics(repo, rugged_commit)
             commit.tree_json = makeD3Network(commit, rugged_commit.tree, "/", count).to_json
