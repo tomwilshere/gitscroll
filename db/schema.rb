@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140423161255) do
+ActiveRecord::Schema.define(version: 20140424180027) do
 
   create_table "authors", force: true do |t|
     t.string   "name"
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 20140423161255) do
     t.datetime "date"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "tree_json"
+    t.text     "tree_json",  limit: 4294967295
   end
 
   add_index "commits", ["author_id"], name: "index_commits_on_author_id"
