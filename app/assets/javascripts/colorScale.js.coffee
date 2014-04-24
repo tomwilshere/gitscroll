@@ -26,6 +26,9 @@ metric_selector.on("change", () ->
   window.current_metric_id = this.value
   min = mins[current_metric_id]
   max = maxs[current_metric_id]
+  red_green_scale = d3.scale.sqrt()
+            .domain([0,0.5,1].map(d3.interpolate(min, max)))
+            .range(["green","yellow","red"])
   nodes.style("fill", (d) -> color(d))
   files.style("fill", (d) -> color(d))
 )
