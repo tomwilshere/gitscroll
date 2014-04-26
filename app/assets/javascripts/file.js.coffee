@@ -36,9 +36,12 @@ $('#forward').click ->
 
 #Utility functions
 highlightLines = ->
-	for i in [0..file_versions.length - 2]
+	for i in [0..file_versions.length - 1]
 		hash = file_versions[i][0]
-		f1 = file_versions[i+1][1].file_contents.split("\n")
+		if file_versions[i+1]
+			f1 = file_versions[i+1][1].file_contents.split("\n")
+		else
+			f1 = ""
 		f2 = file_versions[i][1].file_contents.split("\n")
 		sm = new difflib.SequenceMatcher(f1,f2)
 		lineArray = $('#' + hash + ' ol').children().toArray()
