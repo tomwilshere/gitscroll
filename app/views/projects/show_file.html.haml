@@ -39,5 +39,4 @@
 :javascript
 	window.currentHash = "#{@initial_commit_hash}"
 	var hash_array = #{raw @fileCommits.keys.reverse.to_json}
-	var additions_array = #{raw @additions.to_json}
-	var timeline_object = #{raw @timelineObject.to_json}
+	var file_versions = #{raw @fileCommits.to_a.to_json}

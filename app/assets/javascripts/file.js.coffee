@@ -6,7 +6,8 @@ return if window.hash_array == undefined
 
 #Initialisers
 $(document).ready ->
-	# hljs.initHighlightingOnLoad()
+	# syntax highlight the code. 
+	# On callback highlight altered lines with diff colouring
 	prettyPrint(highlightLines)
 	setButtonStates(hash_array.indexOf(window.currentHash))
 
@@ -34,24 +35,24 @@ $('#forward').click ->
 	forward()
 
 #Utility functions
-
 highlightLines = ->
-	if window.additions_array != undefined
-		for commitAdditions, i in additions_array
-			hash = hash_array[i]
-			lineArray = $('#' + hash + ' ol').children().toArray()
-			if commitAdditions
-				for addition in commitAdditions
-					location = addition.location
-					length = addition.length
-					if length > 0
-						for line in [location..location + length - 1]
-							$(lineArray[line - 1]).addClass("addition")
-					else if length == 0
-						$(lineArray[location-1]).addClass("change")
-					else
-						$(lineArray[location-2]).addClass("deletion")
-		$('.code-block').removeClass("loading",2000)
+	for i in [0..file_versions.length - 2]
+		hash = file_versions[i][0]
+		f1 = file_versions[i+1][1].file_contents.split("\n")
+		f2 = file_versions[i][1].file_contents.split("\n")
+		sm = new difflib.SequenceMatcher(f1,f2)
+		lineArray = $('#' + hash + ' ol').children().toArray()
+		for group in sm.get_opcodes()
+			if group[0] == "equal"
+				# DO NOTHING
+			else if group[0] == "insert"
+				for line in [group[2]+1..group[4]]
+					$(lineArray[line-1]).addClass("addition")
+			else if group[0] == "replace"
+				for line in [group[2]..group[4]]				
+					$(lineArray[line-1]).addClass("change")
+			else if group[0] == "delete"
+				$(lineArray[group[4]]).addClass("deletion")
 
 back = ->
 	changeCommit -1
