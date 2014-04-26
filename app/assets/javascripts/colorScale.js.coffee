@@ -29,7 +29,7 @@ metric_selector.on("change", () ->
   red_green_scale = d3.scale.sqrt()
             .domain([0,0.5,1].map(d3.interpolate(min, max)))
             .range(["green","yellow","red"])
-  nodes.style("fill", (d) -> color(d))
-  files.style("fill", (d) -> color(d))
+  nodes.transition().style("fill", (d) -> color(d))
+  files.style("fill", (d) -> color(d)) #add transition here when it doesn't create a massive lag
 )
 	
