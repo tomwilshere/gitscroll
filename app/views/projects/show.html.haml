@@ -52,5 +52,14 @@
             %span.glyphicon.glyphicon-file
             = blob[:name]
 %script
+  = "var path = \"#{@path}\";".html_safe
   var commits =
   = @commits.html_safe
+  var commit_files = 
+  = @commitFiles.html_safe
+  var file_metrics =
+  = @fileMetrics.html_safe
+  - if @d3Network
+    var d3Network =
+    = @d3Network.html_safe
+    

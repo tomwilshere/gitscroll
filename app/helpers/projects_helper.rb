@@ -19,13 +19,37 @@ module ProjectsHelper
       	return parent_path.join("/")
 	end
 
+    @@previousFiles = []
+    @@currentFiles = []
+
+    def self.get_previous_files
+        @@previousFiles
+    end
+
+    def self.set_previous_files(pf)
+        @@previousFiles = pf
+    end
+
+    def self.get_current_files
+        @@currentFiles
+    end
+
+    def self.set_current_files(cf)
+        @@currentFiles = cf
+    end
+
     def update_metrics(project)
     	repo = Rugged::Repository.new(project.repo_local_url)
     	walker = Rugged::Walker.new(repo)
         walker.sorting(Rugged::SORT_DATE)
     	walker.push(repo.head.target)
     	count = 1
-    	walker.each do |rugged_commit| 
+    	rugged_commits = []
+        walker.each do |rugged_commit|
+            rugged_commits.push(rugged_commit)
+        end
+        rugged_commits = rugged_commits.reverse
+        rugged_commits.each do |rugged_commit|
     		commit = Commit.find_or_create_by_git_hash(rugged_commit.oid)
     		commit.project = project
     		commit.git_hash = rugged_commit.oid
@@ -34,10 +58,11 @@ module ProjectsHelper
     			rugged_commit.author[:name], 
     			rugged_commit.author[:email])
     		commit.date = rugged_commit.author[:time]
-            puts commit.date
             commit.save
             update_commit_metrics(repo, rugged_commit)
-            commit.tree_json = makeD3Network(commit, rugged_commit.tree, "/", count).to_json
+            commit.deleted_files = (ProjectsHelper.get_previous_files - ProjectsHelper.get_current_files).join ","
+            ProjectsHelper.set_previous_files(ProjectsHelper.get_current_files)
+            ProjectsHelper.set_current_files([])
             commit.save
     		puts count
     		count = count + 1
@@ -60,13 +85,16 @@ module ProjectsHelper
 
     def update_commit_file(repo, commit, blob, path)
     	blob_object = repo.lookup(blob[:oid])
-		if !blob_object.binary? && !ProjectsHelper.get_visited_blobs[blob[:oid]]
-			ProjectsHelper.get_visited_blobs[blob[:oid]] = true
-	    	commitFile = CommitFile.find_or_create_by_git_hash(blob[:oid])
-	    	commitFile.commit_id = commit.oid
-	    	commitFile.path = path  + blob[:name]
-	    	commitFile.save
-	    	generate_file_metrics(commitFile, blob_object.content)
+        if !blob_object.binary? 
+            ProjectsHelper.get_current_files.push(path + blob[:name])
+            if !ProjectsHelper.get_visited_blobs[blob[:oid]]
+                ProjectsHelper.get_visited_blobs[blob[:oid]] = true
+                commitFile = CommitFile.find_or_create_by_git_hash(blob[:oid])
+                commitFile.commit_id = commit.oid
+                commitFile.path = path  + blob[:name]
+                commitFile.save
+    	    	generate_file_metrics(commitFile, blob_object.content)
+            end
 		end
     end
 
@@ -108,7 +136,7 @@ module ProjectsHelper
                 end
             end
             # score = (entry[:type] == :blob && CommitFile.exists?(entry[:oid])) ? CommitFile.find(entry[:oid]).file_metrics.where(:metric_id => 1).first.score : nil
-            id = entry[:oid] + ((entry[:type] == :blob) ? SecureRandom.uuid : "")
+            id = entry[:oid] #+ ((entry[:type] == :blob) ? SecureRandom.uuid : "")
             nodes.push(Hash[:id => id, :name => entry[:name], :path => path, :size => nodeSize, :metrics => metrics])
             dataset[:edges].push(Hash[:source => parentOID, :target => id])
         end

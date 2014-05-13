@@ -48,7 +48,7 @@ rightclick = (d) ->
 #   nodes.style("fill", (d) -> color(d))
 # )
 
-dataset = commits.map($.parseJSON)[0]
+dataset = d3Network
 
 width = 1000
 height = 400

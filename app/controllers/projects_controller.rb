@@ -32,15 +32,16 @@ class ProjectsController < ApplicationController
       @parent_path = generate_parent_path(@path)
     end
 
-    @fileCommits = Hash.new
+    @commits = @project.commits
+    @commitFiles = @project.commit_files
+    @fileMetrics = @project.file_metrics
 
     if @object.type == :blob
       view = "show_file"
-      commitFiles = @project.commit_files.where(:path => @path)
 
-      @fileCommits = Hash[commitFiles.map{|cf| [cf.commit_id, {:commit => cf.commit, :file_contents => @repo.lookup(cf.git_hash).content}]}]
+      @fileCommits = Hash[@commitFiles.map{|cf| [cf.commit_id, {:commit => cf.commit, :file_contents => @repo.lookup(cf.git_hash).content}]}]
 
-      if commitFiles.size > 1
+      if @commitFiles.size > 1
         data_table = GoogleVisualr::DataTable.new
         data_table.new_column('datetime', 'date')
         # data_table.new_column('number', 'flog')
@@ -50,7 +51,7 @@ class ProjectsController < ApplicationController
         
         metric_data = []
 
-        commitFiles.each do |cf|
+        @commitFiles.each do |cf|
           commit = cf.commit
           metrics = cf.file_metrics
           file_metric_data = [DateTime.parse(commit.date.to_s)]
@@ -77,11 +78,20 @@ class ProjectsController < ApplicationController
       @path += "/"
     end
 
+    @d3Network = nil
+
     if @object.type == :tree
-      @commits = @project.commits.map{|c| c.tree_json }.to_json
+      @d3Network = makeD3Network(@commits.first, @object, @path, @commits.size).to_json
     end
 
-    puts @fileCommits.size
+    @commits = @commits.to_json
+    @commitFiles = @commitFiles.to_json
+    @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}.to_json
+
+    # respond_to do |format|
+    #   format.html { render view }
+    #   format.json { render json: @commits }
+    # end
     render view
   end
 
