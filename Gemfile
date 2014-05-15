@@ -6,7 +6,7 @@ gem 'rails', '4'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 group :development do
-	gem 'sqlite3'
+	gem 'pg'
 end
 
 # better server
