@@ -15,7 +15,7 @@ svg = d3.select("#chart-lifeline")
         .attr("width", $("#chart-network").width())
         .attr("height", height)
 
-dataset = commits#.sort((a,b) -> new Date(a.date) - new Date(b.date))
+dataset = commits.reverse()#.sort((a,b) -> new Date(a.date) - new Date(b.date))
 
 min = d3.min(commits, (c) -> new Date(c.date))
 max = d3.max(commits, (c) -> new Date(c.date))
@@ -41,7 +41,8 @@ window.files = commit_groups.selectAll("rect.commit_files")
 		.data((d) -> commit_files.filter((n) -> n.commit_id == d.git_hash && n.path.indexOf(path) == 0))
 		.enter()
 		.append("rect")
-		.style("fill", (d) -> color(d))
+		.style("fill", (d) -> color(d)
+		)
 		.attr("height", 2)
 		.attr("width", "100%")
 		.attr("x", (d) ->
@@ -73,11 +74,11 @@ window.deletions = commit_groups.selectAll("rect.deletions")
 
 files.append("title")
 		.text((d) ->
-			if file_metrics && d && file_metrics[d.id] && file_metrics[d.id][current_metric_id]
+			if file_metrics && d && file_metrics[d.id] && file_metrics[d.id].filter((fm) -> fm.metric_id == current_metric_id)[0]
 				"File: " +
 				d.path +
 				" score: " +
-				file_metrics[d.id][current_metric_id].score +
+				file_metrics[d.id].filter((fm) -> fm.metric_id == current_metric_id)[0].score +
 				" commit hash: " +
 				d3.select(this.parentNode.parentNode).datum().git_hash +
 				" commit message: " +
