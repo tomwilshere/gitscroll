@@ -24,7 +24,15 @@
 
 %h2 File Network
 #chart-network.chart
-= collection_select(:metric_id, :metric_name, Metric.all, :id, :name, {}, {:class => "input-sm"})
+%h3 Colouring options
+.row
+  .col-md-6
+    Metric
+    = collection_select(:metric_id, :metric_name, Metric.all, :id, :name, {}, {:class => "input-sm"})
+  .col-md-6
+    %span.pull-right
+      Compare project with:
+      = collection_select(:project_id, :project_name, Project.all, :id, :name, {:selected => @project.id}, {:class => "input-sm"})
 
 %h2 Repo contents
 
@@ -62,4 +70,6 @@
   - if @d3Network
     var d3Network =
     = @d3Network.html_safe
+  var metric_stats = 
+  = @metricStats.html_safe
     

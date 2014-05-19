@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  project_id: 
+  metric_id: 
+  min: 1.5
+  max: 1.5
+
+two:
+  project_id: 
+  metric_id: 
+  min: 1.5
+  max: 1.5

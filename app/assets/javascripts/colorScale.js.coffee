@@ -5,6 +5,7 @@ window.getMetricScore = (file_metric, metric_id) ->
     return null
 
 metric_selector = d3.select("#metric_id_metric_name")
+project_selector = d3.select("#project_id_project_name")
 
 window.mins = []
 window.maxs = []
@@ -43,6 +44,16 @@ metric_selector.on("change", () ->
             .domain([0,0.5,1].map(d3.interpolate(min, max)))
             .range(["green","yellow","red"])
   nodes.transition().style("fill", (d) -> color(d))
-  files.transition().style("fill", (d) -> color(d)) #add transition here when it doesn't create a massive lag
+  files.transition().style("fill", (d) -> color(d))
 )
   
+project_selector.on("change", () -> 
+  project_id = parseInt(this.value)
+  min = metric_stats[project_id][current_metric_id - 1].min
+  max = metric_stats[project_id][current_metric_id - 1].max
+  red_green_scale = d3.scale.sqrt()
+            .domain([0,0.5,1].map(d3.interpolate(min, max)))
+            .range(["green","yellow","red"])
+  nodes.transition().style("fill", (d) -> color(d))
+  files.transition().style("fill", (d) -> color(d))
+)

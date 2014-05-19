@@ -80,13 +80,14 @@ class ProjectsController < ApplicationController
 
     @d3Network = nil
 
-    if @object.type == :tree
+    if @object.type == :tree && @commits.size > 0
       @d3Network = makeD3Network(@commits.first, @object, @path, @commits.size).to_json
     end
 
     @commits = @commits.to_json
     @commitFiles = @commitFiles.to_json
     @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}.to_json
+    @metricStats = MetricStats.all.group_by{|ms| ms.project_id}.to_json
 
     # respond_to do |format|
     #   format.html { render view }

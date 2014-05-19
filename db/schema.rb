@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140515100603) do
+ActiveRecord::Schema.define(version: 20140519131014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,18 @@ ActiveRecord::Schema.define(version: 20140515100603) do
 
   add_index "file_metrics", ["commit_file_id"], name: "index_file_metrics_on_commit_file_id", using: :btree
   add_index "file_metrics", ["metric_id"], name: "index_file_metrics_on_metric_id", using: :btree
+
+  create_table "metric_stats", force: true do |t|
+    t.integer  "project_id"
+    t.integer  "metric_id"
+    t.float    "min"
+    t.float    "max"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "metric_stats", ["metric_id"], name: "index_metric_stats_on_metric_id", using: :btree
+  add_index "metric_stats", ["project_id"], name: "index_metric_stats_on_project_id", using: :btree
 
   create_table "metrics", force: true do |t|
     t.string   "name"

@@ -69,6 +69,8 @@ module ProjectsHelper
     		count = count + 1
     		puts ProjectsHelper.get_visited_blobs.size
     	end
+
+        store_min_and_max_metrics(project)
     end
 
     def update_commit_metrics(repo, commit)
@@ -112,6 +114,15 @@ module ProjectsHelper
 	    		FileMetric.create(file_metric_info)
 	    	end
     	end
+    end
+
+    def store_min_and_max_metrics(project) 
+        file_metrics = project.file_metrics.group_by{|fm| fm.metric_id }
+        Metric.all.each do |metric|
+            min = file_metrics[metric.id].map{|fm| fm.score}.min
+            max = file_metrics[metric.id].map{|fm| fm.score}.max
+            MetricStats.create(:project => project, :metric => metric, :min => min, :max => max)
+        end
     end
 
     def makeD3Network(commit, tree, currentPath, commitNumber)
