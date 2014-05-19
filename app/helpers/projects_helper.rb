@@ -54,11 +54,12 @@ module ProjectsHelper
     		commit.project = project
     		commit.git_hash = rugged_commit.oid
     		commit.message = rugged_commit.message
-    		commit.author = Author.find_or_create_by_name_and_email(
-    			rugged_commit.author[:name], 
-    			rugged_commit.author[:email])
+            name =  rugged_commit.author[:name].encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+            email = rugged_commit.author[:email].encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+    		commit.author = Author.find_or_create_by_name_and_email(name, email)
     		commit.date = rugged_commit.author[:time]
             commit.save
+            # Resque.enqueue(CommitMetricUpdater, commit.id)
             update_commit_metrics(repo, rugged_commit)
             commit.deleted_files = (ProjectsHelper.get_previous_files - ProjectsHelper.get_current_files).join ","
             ProjectsHelper.set_previous_files(ProjectsHelper.get_current_files)

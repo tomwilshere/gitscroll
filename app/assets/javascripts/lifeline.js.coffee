@@ -52,7 +52,7 @@ window.files = commit_groups.selectAll("rect.commit_files")
 		
 window.deletions = commit_groups.selectAll("rect.deletions")
 		.data((d) ->
-			if d.deleted_files != "" 
+			if d.deleted_files && d.deleted_files != ""
 				d.deleted_files.split(",")
 					.filter((df) -> df.indexOf(path) == 0)
 					.map((df) -> {commit: d, deleted_file: df}) 
