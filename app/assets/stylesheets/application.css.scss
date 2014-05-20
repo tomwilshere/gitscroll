@@ -9,7 +9,7 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require bootstrap.min
+ *= require bootstrap
  *= require prettify/prettify
  *= require jquery.ui.all
  *= require timelineJS/timeline
@@ -23,4 +23,8 @@
        font-url('glyphicons.woff') format('woff'),
        font-url('glyphicons.ttf')  format('truetype'),
        url(font-path('glyphicons.svg') + '#glyphicons_halflingsregular') format('svg');
+}
+
+footer {
+	margin-top: 20px;
 }

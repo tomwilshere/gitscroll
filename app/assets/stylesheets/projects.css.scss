@@ -11,8 +11,8 @@
 }
 
 .chart {
-  height: 402px;
-  border: 1px solid red;
+  height: 350px;
+  background-color: white;
   // border-radius: 5px;
 }
 
@@ -44,4 +44,20 @@
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
+}
+
+.input-sm {
+	color: black;
+}
+
+#metric_id_metric_name {
+	width: 100%;
+}
+
+#project_id_project_name {
+	width: 100%;
+}
+
+#gradient-points {
+	width: 100%;
 }

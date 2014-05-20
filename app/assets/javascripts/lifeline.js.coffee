@@ -153,7 +153,7 @@ window.identifyGradientPoints = () ->
 				i++
 		if pathCommitId
 			pathMaxGradients.push({path: path, commit_id: pathCommitId, gradient: pathDifference})
-	gradientPoints = pathMaxGradients.sort((a,b) -> b.gradient - a.gradient).slice(0,5)
+	gradientPoints = pathMaxGradients.sort((a,b) -> b.gradient - a.gradient).slice(0,$('#gradient-points').val())
 
 	svg.selectAll("circle").remove()
 	gradientCircles = svg.selectAll("circle")
@@ -168,3 +168,8 @@ window.identifyGradientPoints = () ->
 			.attr("r", 10)
 
 identifyGradientPoints()
+
+$('#gradient-points').on("change mousemove", () -> 
+    identifyGradientPoints()
+    $('#gradient-points-count').html($(this).val())
+)
