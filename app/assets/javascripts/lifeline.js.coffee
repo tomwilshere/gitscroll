@@ -17,18 +17,13 @@ tip = d3.tip()
         .offset([-10,0-$("#chart-network").width()/2])
         # .direction('w')
         .html((d) ->
-            console.log d
-            if file_metrics && d && file_metrics[d.id] && file_metrics[d.id].filter((fm) -> fm.metric_id == current_metric_id)[0]
+            if getMetricScore(file_metrics[d.id], current_metric_id)
                 "File: " +
                 d.path +
                 "<br>Score: " +
                 getMetricScore(file_metrics[d.id],current_metric_id) + 
-                # " commit hash: " +
-                # d3.select(this.parentNode).datum().git_hash +
                 " commit message: " +
                 d3.select(this.parentNode).datum().message
-                # " date: " +
-                # d3.select(this.parentNode).datum().date.to_s
         )
 
 
