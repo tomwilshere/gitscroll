@@ -116,7 +116,8 @@ module ProjectsHelper
     	end
     end
 
-    def store_min_and_max_metrics(project) 
+    def store_min_and_max_metrics(project)
+        project.metric_stats.destroy_all
         file_metrics = project.file_metrics.group_by{|fm| fm.metric_id }
         Metric.all.each do |metric|
             min = file_metrics[metric.id].map{|fm| fm.score}.min
