@@ -32,8 +32,8 @@ class ProjectsController < ApplicationController
       @parent_path = generate_parent_path(@path)
     end
 
-    @commits = @project.commits
-    @commitFiles = @project.commit_files
+    @commits = @project.commits.sort_by{|c| c.date}
+    @commitFiles = @project.commit_files.sort_by { |cf| cf.commit.date }
     @fileMetrics = @project.file_metrics
 
     if @object.type == :blob
@@ -85,7 +85,8 @@ class ProjectsController < ApplicationController
     end
 
     @commits = @commits.to_json
-    @commitFiles = @commitFiles.to_json
+    @commitFilesByPath = @commitFiles.group_by{|cf| cf.path}.to_json
+    @commitFiles = @commitFiles.group_by{|cf| cf.commit_id }.to_json
     @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}.to_json
     @metricStats = MetricStats.all.group_by{|ms| ms.project_id}.to_json
 

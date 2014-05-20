@@ -15,7 +15,7 @@ svg = d3.select("#chart-lifeline")
         .attr("width", $("#chart-network").width())
         .attr("height", height)
 
-dataset = commits.reverse()#.sort((a,b) -> new Date(a.date) - new Date(b.date))
+dataset = commits#.sort((a,b) -> new Date(a.date) - new Date(b.date))
 
 min = d3.min(commits, (c) -> new Date(c.date))
 max = d3.max(commits, (c) -> new Date(c.date))
@@ -38,7 +38,7 @@ commit_groups = svg.selectAll("g")
 		.each((d,i) -> d.index = i)
 
 window.files = commit_groups.selectAll("rect.commit_files")
-		.data((d) -> commit_files.filter((n) -> n.commit_id == d.git_hash && n.path.indexOf(path) == 0))
+		.data((d) -> commit_files[d.git_hash] || [])#commit_files.filter((n) -> n.commit_id == d.git_hash && n.path.indexOf(path) == 0))
 		.enter()
 		.append("rect")
 		.style("fill", (d) -> color(d)
@@ -109,3 +109,35 @@ files.attr("y", (d) -> update_file_scale(file_scale(d.path)))
 deletions.attr("y", (d) -> update_file_scale(file_scale(d.deleted_file)))
 		.attr("height", $("#chart-lifeline").height() / Object.size(file_ordering))
 
+window.identifyGradientPoints = () ->
+	pathMaxGradients = new Array()
+	for path of commit_files_by_path
+		pathDifference = 0
+		pathCommitId = null
+		cfs = commit_files_by_path[path]
+		metrics = cfs.map((cf) -> {commit: cf.commit_id, score: getMetricScore(file_metrics[cf.id],current_metric_id)})
+		if metrics.length > 1
+			i = 1
+			while i < metrics.length
+				difference = metrics[i].score - metrics[i-1].score
+				if difference > pathDifference
+					pathDifference = difference 
+					pathCommitId = metrics[i].commit
+				i++
+		if pathCommitId
+			pathMaxGradients.push({path: path, commit_id: pathCommitId, gradient: pathDifference})
+	gradientPoints = pathMaxGradients.sort((a,b) -> b.gradient - a.gradient).slice(0,5)
+
+	svg.selectAll("circle").remove()
+	gradientCircles = svg.selectAll("circle")
+			.data(gradientPoints)
+			.enter()
+			.append("circle")
+			.style("fill", "none")
+			.style("stroke", "red")
+			.style("stroke-width", "2")
+			.attr("cx", (d) -> commit_scale(commits.filter((c) -> c.id == d.commit_id)[0].index))
+			.attr("cy", (d) -> update_file_scale(file_scale(d.path)) + ($("#chart-lifeline").height() / Object.size(file_ordering))/2)
+			.attr("r", 10)
+
+identifyGradientPoints()
