@@ -166,7 +166,7 @@ window.identifyGradientPoints = () ->
 			.enter()
 			.append("circle")
 			.style("fill", "none")
-			.style("stroke", "red")
+			.style("stroke", "blue")
 			.style("stroke-width", "2")
 			.attr("cx", (d) -> commit_scale(commits.filter((c) -> c.id == d.commit_id)[0].index))
 			.attr("cy", (d) -> update_file_scale(file_scale(d.path)) + ($("#chart-lifeline").height() / Object.size(file_ordering))/2)
