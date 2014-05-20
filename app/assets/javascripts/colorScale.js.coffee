@@ -25,7 +25,7 @@ checkAndCalculateMetricStats = () ->
       max = d3.max(metric_array, (d) -> if (d[metric_id]) then d[metric_id].score else null)
       metric_stats[current_compare_project_id][metric_id-1] = {min: min, max: max}
 
-  return metric_stats[current_compare_project_id][current_metric_id]
+  return metric_stats[current_compare_project_id][current_metric_id-1]
 
 window.currentMin = () ->
   checkAndCalculateMetricStats().min
