@@ -10,11 +10,28 @@ project_selector = d3.select("#project_id_project_name")
 window.current_metric_id = 1
 window.current_compare_project_id = $('#project_id_project_name').val()
 
+checkAndCalculateMetricStats = () ->
+  if !metric_stats[current_compare_project_id]
+    metric_array = new Array();
+
+    for key of file_metrics
+      metric_array.push(file_metrics[key])
+
+    metric_stats[current_compare_project_id] = new Array
+
+    metric_selector.selectAll("option").each () ->
+      metric_id = this.value
+      min = d3.min(metric_array, (d) -> if (d[metric_id]) then d[metric_id].score else null)
+      max = d3.max(metric_array, (d) -> if (d[metric_id]) then d[metric_id].score else null)
+      metric_stats[current_compare_project_id][metric_id-1] = {min: min, max: max}
+
+  return metric_stats[current_compare_project_id][current_metric_id]
+
 window.currentMin = () ->
-  metric_stats[current_compare_project_id][current_metric_id-1].min
+  checkAndCalculateMetricStats().min
 
 window.currentMax = () ->
-  metric_stats[current_compare_project_id][current_metric_id-1].max
+  checkAndCalculateMetricStats().max
 
 red_green_scale = d3.scale.sqrt()
             .domain([0,0.5,1].map(d3.interpolate(currentMin(), currentMax())))
