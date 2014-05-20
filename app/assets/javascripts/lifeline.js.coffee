@@ -1,5 +1,10 @@
 return if window.commits == undefined
 
+# redraw function for panning and zooming
+redraw = () ->
+    svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+    return
+
 Object.size = (obj) ->
   size = 0
   key = undefined
@@ -7,13 +12,38 @@ Object.size = (obj) ->
     size++  if obj.hasOwnProperty(key)
   size
 
+tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10,0-$("#chart-network").width()/2])
+        # .direction('w')
+        .html((d) ->
+            console.log d
+            if file_metrics && d && file_metrics[d.id] && file_metrics[d.id].filter((fm) -> fm.metric_id == current_metric_id)[0]
+                "File: " +
+                d.path +
+                "<br>Score: " +
+                getMetricScore(file_metrics[d.id],current_metric_id) + 
+                # " commit hash: " +
+                # d3.select(this.parentNode).datum().git_hash +
+                " commit message: " +
+                d3.select(this.parentNode).datum().message
+                # " date: " +
+                # d3.select(this.parentNode).datum().date.to_s
+        )
+
+
 width = 1000
 height = 400
 
-svg = d3.select("#chart-lifeline")
+svgContainer = d3.select("#chart-lifeline")
         .append("svg")
         .attr("width", $("#chart-network").width())
         .attr("height", height)
+        .call(d3.behavior.zoom().scaleExtent([1,Infinity]).on("zoom", redraw));
+
+svg = svgContainer.append('svg:g')
+
+svg.call(tip)
 
 dataset = commits#.sort((a,b) -> new Date(a.date) - new Date(b.date))
 
@@ -49,7 +79,9 @@ window.files = commit_groups.selectAll("rect.commit_files")
 			commit_scale(d3.select(this.parentNode).datum().index)
 		)
 		.attr("y", (d, i) -> file_scale(d.path))
-		.on("click", (d) -> document.location.href = "/projects/" + d3.select(this.parentNode).datum().project_id + "/" + d.path )
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide)
+		# .on("click", (d) -> document.location.href = "/projects/" + d3.select(this.parentNode).datum().project_id + "/" + d.path )
 		
 window.deletions = commit_groups.selectAll("rect.deletions")
 		.data((d) ->
@@ -72,20 +104,20 @@ window.deletions = commit_groups.selectAll("rect.deletions")
 			file_scale(d.deleted_file)
 		)
 
-files.append("title")
-		.text((d) ->
-			if file_metrics && d && file_metrics[d.id] && file_metrics[d.id].filter((fm) -> fm.metric_id == current_metric_id)[0]
-				"File: " +
-				d.path +
-				" score: " +
-				file_metrics[d.id].filter((fm) -> fm.metric_id == current_metric_id)[0].score +
-				" commit hash: " +
-				d3.select(this.parentNode.parentNode).datum().git_hash +
-				" commit message: " +
-				d3.select(this.parentNode.parentNode).datum().message +
-				" date: " +
-				d3.select(this.parentNode.parentNode).datum().date
-			)
+# files.append("title")
+# 		.text((d) ->
+# 			if file_metrics && d && file_metrics[d.id] && file_metrics[d.id].filter((fm) -> fm.metric_id == current_metric_id)[0]
+# 				"File: " +
+# 				d.path +
+# 				" score: " +
+# 				file_metrics[d.id].filter((fm) -> fm.metric_id == current_metric_id)[0].score +
+# 				" commit hash: " +
+# 				d3.select(this.parentNode.parentNode).datum().git_hash +
+# 				" commit message: " +
+# 				d3.select(this.parentNode.parentNode).datum().message +
+# 				" date: " +
+# 				d3.select(this.parentNode.parentNode).datum().date
+# 			)
 
 deletions.append("title")
 		.text((d) ->

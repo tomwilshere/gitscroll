@@ -23,7 +23,7 @@ gem 'coderay'
 
 #d3
 gem 'd3-rails'
-
+gem 'd3-tip-rails'
 #google charts
 gem 'google_visualr'
 
