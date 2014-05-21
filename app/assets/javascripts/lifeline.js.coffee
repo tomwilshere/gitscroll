@@ -193,7 +193,8 @@ updateLifeline = (data) ->
 	window.commit_files_by_path = data.commit_files_by_path
 	checkAndCalculateMetricStats(true)
 	refreshLifelineData()
-	nodes.attr("fill", (d) -> color(d))
+	if window.nodes != undefined
+		nodes.attr("fill", (d) -> color(d))
 	d3.select('#progress-bar').transition().style("width", (commits.length / project.num_commits) * 100 + "%")
 	if commits.length < project.num_commits
 		refreshData()

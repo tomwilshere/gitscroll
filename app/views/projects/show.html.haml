@@ -62,8 +62,6 @@
           %span.sr-only 45% Complete
     %h2 Project Lifeline
     #chart-lifeline.chart
-    %button#update-data.btn
-      Update Data
 
     %h2 File Network
     #chart-network.chart
@@ -79,7 +77,10 @@
   var file_metrics =
   = @jsonFileMetrics.html_safe
   var d3Network =
-  = @d3Network.html_safe
+  - if @d3Network
+    = @d3Network.html_safe
+  - else
+    null
   var metric_stats =
   = @jsonMetricStats.html_safe
   var project =

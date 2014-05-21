@@ -1,4 +1,4 @@
-return if window.commits == undefined || d3Network == undefined
+return if window.commits == undefined || d3Network == null
 
 # redraw function for panning and zooming
 redraw = () ->
