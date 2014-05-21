@@ -19,9 +19,6 @@ rightclick = (d) ->
 
 dataset = d3Network
 
-width = 1000
-height = 400
-
 edges = []
 dataset.edges.forEach (e) ->
 
@@ -40,9 +37,12 @@ dataset.edges.forEach (e) ->
 
   return
 
+width = $("#chart-network").width()
+height = $("#chart-network").height()
+
 svg = d3.select("#chart-network")
         .append("svg")
-        .attr("width", $("#chart-network").width())
+        .attr("width", width)
         .attr("height", height)
         .attr("preserveAspectRatio", "xMidYMid meet")
         .attr("pointer-events", "all")

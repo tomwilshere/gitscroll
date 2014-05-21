@@ -199,6 +199,6 @@ updateLifeline = (data) ->
 	if commits.length < project.num_commits
 		refreshData()
 	else
-		d3.select('#progress-bar').hide()
+		$('#progress-bar').hide()
 
 refreshData()
