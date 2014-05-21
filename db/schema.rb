@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140519131014) do
+ActiveRecord::Schema.define(version: 20140521104824) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20140519131014) do
     t.datetime "updated_at"
     t.text     "tree_json"
     t.text     "deleted_files"
+    t.integer  "commit_number"
   end
 
   add_index "commits", ["author_id"], name: "index_commits_on_author_id", using: :btree
@@ -86,6 +87,7 @@ ActiveRecord::Schema.define(version: 20140519131014) do
     t.string   "repo_local_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "num_commits"
   end
 
 end

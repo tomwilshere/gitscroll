@@ -84,17 +84,19 @@ class ProjectsController < ApplicationController
       @d3Network = makeD3Network(@commits.first, @object, @path, @commits.size).to_json
     end
 
-    @commits = @commits.to_json
-    @commitFilesByPath = @commitFiles.group_by{|cf| cf.path}.to_json
-    @commitFiles = @commitFiles.group_by{|cf| cf.commit_id }.to_json
-    @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}.to_json
-    @metricStats = MetricStats.all.group_by{|ms| ms.project_id}.to_json
+    @jsonCommits = @commits.to_json
+    @commitFilesByPath = @commitFiles.group_by{|cf| cf.path}
+    @jsonCommitFilesByPath = @commitFilesByPath.to_json
+    @commitFiles = @commitFiles.group_by{|cf| cf.commit_id }
+    @jsonCommitFiles = @commitFiles.to_json
+    @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}
+    @jsonFileMetrics = @fileMetrics.to_json
+    @jsonMetricStats = MetricStats.all.group_by{|ms| ms.project_id}.to_json
 
-    # respond_to do |format|
-    #   format.html { render view }
-    #   format.json { render json: @commits }
-    # end
-    render view
+    respond_to do |format|
+      format.json { render json: {commits: @commits, commit_files: @commitFiles, file_metrics: @fileMetrics, commit_files_by_path: @commitFilesByPath} }
+      format.all { render view }
+    end
   end
 
 

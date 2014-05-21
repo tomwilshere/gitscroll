@@ -54,8 +54,16 @@
                 = blob[:name]
 
   .col-md-10
+    #progress.hidden
+      %h2 Background Processing
+      %p We're calculating metrics for your project - shouldn't take long!
+      .progress.progress-striped.active
+        #progress-bar.progress-bar{"aria-valuemax" => "100", "aria-valuemin" => "0", "aria-valuenow" => "0", :role => "progressbar", :style => "width: 0%"}
+          %span.sr-only 45% Complete
     %h2 Project Lifeline
     #chart-lifeline.chart
+    %button#update-data.btn
+      Update Data
 
     %h2 File Network
     #chart-network.chart
@@ -63,16 +71,17 @@
 %script
   = "var path = \"#{@path}\";".html_safe
   var commits =
-  = @commits.html_safe
+  = @jsonCommits.html_safe
   var commit_files = 
-  = @commitFiles.html_safe
+  = @jsonCommitFiles.html_safe
   var commit_files_by_path =
-  = @commitFilesByPath.html_safe
+  = @jsonCommitFilesByPath.html_safe
   var file_metrics =
-  = @fileMetrics.html_safe
-  - if @d3Network
-    var d3Network =
-    = @d3Network.html_safe
+  = @jsonFileMetrics.html_safe
+  var d3Network =
+  = @d3Network.html_safe
   var metric_stats =
-  = @metricStats.html_safe
+  = @jsonMetricStats.html_safe
+  var project =
+  = @project.to_json.html_safe
     

@@ -16,7 +16,15 @@ class Project < ActiveRecord::Base
     # Make repos directory if it doesn't exist
     Dir.mkdir("repos") if !Dir.exists?("repos")
     Dir.mkdir self.repo_local_url
-    Rugged::Repository.clone_at(self.repo_remote_url, self.repo_local_url)
+    repo = Rugged::Repository.clone_at(self.repo_remote_url, self.repo_local_url)
+    walker = Rugged::Walker.new(repo)
+    walker.sorting(Rugged::SORT_DATE)
+    walker.push(repo.head.target)
+    rugged_commits = []
+    walker.each do |rugged_commit|
+      rugged_commits.push(rugged_commit)
+    end
+    self.num_commits = rugged_commits.size
   end
 
   # Verifies a local copy of the repo exists

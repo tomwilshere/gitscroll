@@ -43,11 +43,13 @@ module ProjectsHelper
     	walker = Rugged::Walker.new(repo)
         walker.sorting(Rugged::SORT_DATE)
     	walker.push(repo.head.target)
-    	count = 1
+    	count = 0
     	rugged_commits = []
         walker.each do |rugged_commit|
             rugged_commits.push(rugged_commit)
         end
+        project.num_commits = rugged_commits.size
+        project.save
         rugged_commits = rugged_commits.reverse
         rugged_commits.each do |rugged_commit|
     		commit = Commit.find_or_create_by_git_hash(rugged_commit.oid)
@@ -58,6 +60,7 @@ module ProjectsHelper
             email = rugged_commit.author[:email].encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
     		commit.author = Author.find_or_create_by_name_and_email(name, email)
     		commit.date = rugged_commit.author[:time]
+            commit.commit_number = count
             commit.save
             # Resque.enqueue(CommitMetricUpdater, commit.id)
             update_commit_metrics(repo, rugged_commit)

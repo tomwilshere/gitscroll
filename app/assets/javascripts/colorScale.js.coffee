@@ -8,10 +8,10 @@ metric_selector = d3.select("#metric_id_metric_name")
 project_selector = d3.select("#project_id_project_name")
 
 window.current_metric_id = 1
-window.current_compare_project_id = $('#project_id_project_name').val()
+window.current_compare_project_id = project.id
 
-checkAndCalculateMetricStats = () ->
-  if !metric_stats[current_compare_project_id]
+window.checkAndCalculateMetricStats = (force = false) ->
+  if !metric_stats[current_compare_project_id] || (force && project.id == current_compare_project_id)
     metric_array = new Array();
 
     for key of file_metrics
@@ -33,12 +33,12 @@ window.currentMin = () ->
 window.currentMax = () ->
   checkAndCalculateMetricStats().max
 
-red_green_scale = d3.scale.sqrt()
-            .domain([0,0.5,1].map(d3.interpolate(currentMin(), currentMax())))
-            .range(["green","yellow","red"])
 window.color = (commit_file) ->
   score = getMetricScore(file_metrics[commit_file.id],current_metric_id)
   if score
+    red_green_scale = d3.scale.sqrt()
+        .domain([0,0.5,1].map(d3.interpolate(currentMin(), currentMax())))
+        .range(["green","yellow","red"])
     return red_green_scale(score)
   else
     return "#ccc"
@@ -52,7 +52,7 @@ metric_selector.on("change", () ->
   files.transition().style("fill", (d) -> color(d))
   identifyGradientPoints()
 )
-  
+
 project_selector.on("change", () -> 
   window.current_compare_project_id = parseInt(this.value)
   min = metric_stats[current_compare_project_id][current_metric_id - 1].min
