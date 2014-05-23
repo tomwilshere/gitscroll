@@ -6,39 +6,38 @@ if commits.length < project.num_commits
 
 # redraw function for panning and zooming
 redraw = () ->
-    svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
-    return
+	svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+	return
 
 window.Object.size = (obj) ->
-  size = 0
-  key = undefined
-  for key of obj
-    size++  if obj.hasOwnProperty(key)
-  size
+	size = 0
+	key = undefined
+	for key of obj
+		size++  if obj.hasOwnProperty(key)
+	size
 
 tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .offset([-10,0-$("#chart-network").width()/2])
-        # .direction('w')
-        .html((d) ->
-            if getMetricScore(file_metrics[d.id], current_metric_id)
-                "File: " +
-                d.path +
-                "<br>Score: " +
-                getMetricScore(file_metrics[d.id],current_metric_id) + 
-                " commit message: " +
-                d3.select(this.parentNode).datum().message
-        )
+		.attr('class', 'd3-tip')
+		.offset([-10,0-$("#chart-network").width()/2])
+		# .direction('w')
+		.html((d) ->
+			html = "File: " + d.path
+			score = getMetricScore(file_metrics[d.id], current_metric_id)
+			if score
+				html += "<br>Score: " + score
+			html += " commit message: " + d3.select(this.parentNode).datum().message
+			return html
+		)
 
 
 width = 1000
 height = 400
 
 svgContainer = d3.select("#chart-lifeline")
-        .append("svg")
-        .attr("width", $("#chart-network").width())
-        .attr("height", height)
-        .call(d3.behavior.zoom().scaleExtent([1,Infinity]).on("zoom", redraw));
+		.append("svg")
+		.attr("width", $("#chart-network").width())
+		.attr("height", height)
+		.call(d3.behavior.zoom().scaleExtent([1,Infinity]).on("zoom", redraw));
 
 svg = svgContainer.append('svg:g')
 
@@ -123,8 +122,8 @@ refreshLifelineData = () ->
 				commit_scale(d3.select(this.parentNode).datum().commit_number)
 			)
 			.attr("y", (d, i) -> file_scale(d.path))
-	        .on('mouseover', tip.show)
-	        .on('mouseout', tip.hide)
+			.on('mouseover', tip.show)
+			.on('mouseout', tip.hide)
 			# .on("click", (d) -> document.location.href = "/projects/" + d3.select(this.parentNode).datum().project_id + "/" + d.path )
 
 	files.transition()
@@ -179,8 +178,8 @@ deletions.attr("y", (d) -> file_scale(d.deleted_file))
 		.attr("height", $("#chart-lifeline").height() / Object.size(file_ordering))
 
 $('#gradient-points').on("change mousemove", () -> 
-    identifyGradientPoints()
-    $('#gradient-points-count').html($(this).val())
+	identifyGradientPoints()
+	$('#gradient-points-count').html($(this).val())
 )
 
 refreshData = () ->
