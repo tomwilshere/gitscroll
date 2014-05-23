@@ -85,7 +85,6 @@ window.identifyGradientPoints = () ->
 window.file_ordering = {}
 
 refreshLifelineData = () ->
-
 	window.file_scale = (path) ->
 		if file_ordering[path] == undefined
 			file_ordering[path] = Object.size(file_ordering)
@@ -108,12 +107,16 @@ refreshLifelineData = () ->
 			.remove()
 
 	window.files = commit_groups.selectAll("rect.commit_files")
-			.data(((d) -> commit_files[d.git_hash] || []), (d) -> d.id)
+			.data(((d) ->
+				cfs = commit_files[d.git_hash] || []
+				if cfs
+					cfs = cfs.filter((cf) -> cf.path.indexOf(path) == 0 )
+			), (d) -> d.id)
 
 	files.enter()
 			.append("rect")
 			.attr("class", "commit_files")
-			.style("fill", (d) -> 
+			.style("fill", (d) ->
 				color(d)
 			)
 			.attr("height", 2)
