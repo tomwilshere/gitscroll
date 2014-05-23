@@ -24,7 +24,7 @@ module MetricsHelper
 
 	def wilt(file)
 		lines = file.split("\n")
-		return lines.size > 0 ? lines.map{ |line| line[/\A */].size}.sum()/lines.size : nil
+		return lines.size > 0 ? lines.map{ |line| line[/\A\s*/].size}.sum()/lines.size : nil
 	end
 
 	def rubocop(file)
@@ -52,16 +52,6 @@ module MetricsHelper
 		return count
 	end
 
-	def generate_metrics(file)
-		metrics = Hash.new
-		metrics[:flog] = flog(file)
-		metrics[:num_lines] = num_lines(file)
-		metrics[:wilt] = wilt(file)
-		metrics[:rubocop] = rubocop(file)
-		metrics[:comment_count] = comment_count(file)
-		return metrics
-	end
-
 	def generate_metrics(fileContents, file_name)
 		metrics = Hash.new
 		all_metrics().each do |metric_name, metric|
@@ -70,18 +60,6 @@ module MetricsHelper
 			end
 		end
 		return metrics
-	end
-
-	def all_metrics()
-		metrics = {:flog => {:function => method(:flog), 
-							:extension_list => ["rb"]},
-					:num_lines => {:function => method(:num_lines), 
-							:extension_list => []},
-					:wilt => {:function => method(:wilt),
-							:extension_list => []},
-					:rubocop => {:function => method(:rubocop),
-							:extension_list => ["rb", "erb", "haml"]}
-				}
 	end
 
 end
