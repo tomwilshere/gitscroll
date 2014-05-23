@@ -48,8 +48,6 @@ module ProjectsHelper
         walker.each do |rugged_commit|
             rugged_commits.push(rugged_commit)
         end
-        project.num_commits = rugged_commits.size
-        project.save
         rugged_commits = rugged_commits.reverse
         rugged_commits.each do |rugged_commit|
     		commit = Commit.find_or_create_by_git_hash(rugged_commit.oid)
@@ -123,8 +121,11 @@ module ProjectsHelper
         project.metric_stats.destroy_all
         file_metrics = project.file_metrics.group_by{|fm| fm.metric_id }
         Metric.all.each do |metric|
-            min = file_metrics[metric.id].map{|fm| fm.score}.min
-            max = file_metrics[metric.id].map{|fm| fm.score}.max
+            metrics = file_metrics[metric.id]
+            if metrics 
+                min = metrics.map{|fm| fm.score}.min
+                max = metrics.map{|fm| fm.score}.max
+            end
             MetricStats.create(:project => project, :metric => metric, :min => min, :max => max)
         end
     end

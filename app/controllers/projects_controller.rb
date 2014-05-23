@@ -80,7 +80,7 @@ class ProjectsController < ApplicationController
 
     @d3Network = nil
 
-    if @object.type == :tree && @commits.size > 0
+    if @object.type == :tree && @commits.size > 0 && request.format != "json"
       @d3Network = makeD3Network(@commits.first, @object, @path, @commits.size).to_json
     end
 

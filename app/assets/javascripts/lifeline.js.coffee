@@ -184,7 +184,10 @@ $('#gradient-points').on("change mousemove", () ->
 )
 
 refreshData = () ->
-	$.getJSON("/projects/" + project.id + ".json", updateLifeline)
+	if commits.length < project.num_commits
+		$.getJSON("/projects/" + project.id + ".json", updateLifeline)
+	else
+		$('#progress-bar').hide()
 
 updateLifeline = (data) ->
 	window.commits = data.commits
@@ -196,9 +199,6 @@ updateLifeline = (data) ->
 	if window.nodes != undefined
 		nodes.attr("fill", (d) -> color(d))
 	d3.select('#progress-bar').transition().style("width", (commits.length / project.num_commits) * 100 + "%")
-	if commits.length < project.num_commits
-		refreshData()
-	else
-		$('#progress-bar').hide()
+	refreshData()
 
 refreshData()

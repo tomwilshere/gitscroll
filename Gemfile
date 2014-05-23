@@ -9,6 +9,10 @@ group :development do
 	gem 'pg'
 end
 
+group :test do
+	gem 'sqlite3'
+end
+
 # better server
 gem 'thin'
 

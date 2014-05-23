@@ -42,7 +42,6 @@ ActiveRecord::Schema.define(version: 20140521104824) do
     t.datetime "date"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "tree_json"
     t.text     "deleted_files"
     t.integer  "commit_number"
   end

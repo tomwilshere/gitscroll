@@ -203,6 +203,7 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
+    sqlite3 (1.3.9)
     syntax (1.2.0)
     thin (1.6.2)
       daemons (>= 1.0.9)
@@ -255,6 +256,7 @@ DEPENDENCIES
   rugged!
   sass-rails
   simplecov
+  sqlite3
   syntax
   thin
   turbolinks
