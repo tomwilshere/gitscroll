@@ -157,7 +157,6 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1.json
   def destroy
     @project = Project.find(params[:id])
-    FileUtils.rm_rf Dir.glob(@project.repo_local_url)
     @project.destroy
 
     respond_to do |format|

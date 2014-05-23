@@ -32,4 +32,9 @@ class Project < ActiveRecord::Base
     Dir.exists? self.repo_local_url
   end
 
+  def destroy
+    FileUtils.rm_rf Dir.glob(self.repo_local_url)
+    super
+  end
+
 end
