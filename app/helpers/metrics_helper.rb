@@ -1,4 +1,22 @@
 module MetricsHelper
+
+	def generate_metrics(fileContents, file_name)
+		metrics = Hash.new
+		Metric.all.each do |metric|
+			if (metric[:extension_list].empty?) || (metric[:extension_list].include? file_name.split(".").last)
+				metrics[metric.name] = method(metric.name.to_sym).call(fileContents)
+			end
+		end
+		return metrics
+	end
+
+	def createTempFile(fileContents, fileName)
+		tempFile = Tempfile.new(fileName)
+		tempFile.write(fileContents.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}))
+		tempFile.rewind
+		return tempFile
+	end
+
 	def flog(file)
 		require 'fileutils'
 		require 'flog'
@@ -28,11 +46,15 @@ module MetricsHelper
 	end
 
 	def rubocop(file)
-		tempFile = Tempfile.new("rubocop")
-		tempFile.write(file.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}))
-		tempFile.rewind
+		tempFile = createTempFile(file, "rubocop")
 		res = `rubocop #{tempFile.path}`
 		return res.split("\n").size
+	end
+
+	def checkstyle(file)
+		tempFile = createTempFile(file, "checkstyle")
+		res = `java -jar metric_scripts/checkstyle/checkstyle-5.7-all.jar -c metric_scripts/checkstyle/sun_checks.xml #{tempFile.path}`
+		return res.split("\n").size() - 2
 	end
 
 	def comment_count(file)
@@ -50,16 +72,6 @@ module MetricsHelper
 			count = count + comment_found.to_i
 		end
 		return count
-	end
-
-	def generate_metrics(fileContents, file_name)
-		metrics = Hash.new
-		all_metrics().each do |metric_name, metric|
-			if (metric[:extension_list].empty?) || (metric[:extension_list].include? file_name.split(".").last)
-				metrics[metric_name] = metric[:function].call(fileContents)
-			end
-		end
-		return metrics
 	end
 
 end

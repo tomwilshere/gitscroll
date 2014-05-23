@@ -5,4 +5,4 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-Metric.create([{name: 'wilt', extension_list: ''}, {name: 'num_lines', extension_list: ''}, { name: 'flog', extension_list: 'rb'}, {name: 'rubocop', extension_list: 'rb'}])
+Metric.create([{name: 'wilt', extension_list: ''}, {name: 'num_lines', extension_list: ''}, { name: 'flog', extension_list: 'rb'}, {name: 'rubocop', extension_list: 'rb'}, {name: 'checkstyle', extension_list: 'java'}])
