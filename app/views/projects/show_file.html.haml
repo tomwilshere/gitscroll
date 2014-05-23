@@ -29,13 +29,7 @@
 		%h3 File contents
 		%pre.code-block
 			%code.prettyprint.linenums
-				=file_commit[:file_contents]
-
-		-# %h3 Diff
-		-# %pre.code-block
-		-# 	%code.prettyprint.diff
-		-# 		=@diffs[i]
-
+				=file_commit[:file_contents].encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
 :javascript
 	window.currentHash = "#{@initial_commit_hash}"
 	var hash_array = #{raw @fileCommits.keys.reverse.to_json}

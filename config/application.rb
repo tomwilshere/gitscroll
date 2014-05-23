@@ -23,6 +23,7 @@ module Gitscroll
     # Adds the vendor fonts folder to asset paths, and font regex for precompile
     config.assets.paths << Rails.root.join('vendor', 'assets', 'fonts')
     config.assets.precompile << /\.(?:svg|eot|woff|ttf)\z$/
+    config.encoding = "utf-8"
 
   end
 end
