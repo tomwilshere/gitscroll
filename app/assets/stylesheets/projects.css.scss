@@ -10,6 +10,23 @@
 	width: 30px;
 }
 
+.file-row {
+  text-align: center;
+}
+
+.file-row span {
+  font-size: 50px;
+  width: 100%;
+}
+
+#five-fixes span {
+  color: red;
+}
+
+#five-watches span {
+  color: yellow;
+}
+
 .chart {
   height: 350px;
   background-color: white;

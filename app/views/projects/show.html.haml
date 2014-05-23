@@ -18,42 +18,66 @@
 -#   %dt time
 -#   %dd= @commit.time
 %hr
+
 .row
   .col-md-2
-    %h2 Options
-    Metric:
-    = collection_select(:metric_id, :metric_name, Metric.all, :id, :name, {}, {:class => "input-sm"})
-    Compare project with:
-    = collection_select(:project_id, :project_name, Project.all, :id, :name, {:selected => @project.id}, {:class => "input-sm"})
-    Number of gradient points:
-    %span#gradient-points-count
-      5
+    #options
+      %h2 Options
+      Metric:
+      = collection_select(:metric_id, :metric_name, Metric.all, :id, :name, {}, {:class => "input-sm"})
+      Compare project with:
+      = collection_select(:project_id, :project_name, Project.all, :id, :name, {:selected => @project.id}, {:class => "input-sm"})
+      Number of gradient points:
+      %span#gradient-points-count
+        5
 
-    %input#gradient-points{max: "20", min: "1", name: "gradientPoints", type: "range", value: "5", "data-show-value" => "true"}
+      %input#gradient-points{max: "20", min: "1", name: "gradientPoints", type: "range", value: "5", "data-show-value" => "true"}
 
-    %h2 Browse
-    %table.table.table-hover
-      %tbody
-        - if @parent_path != nil
-          %tr
-            %td
-              = link_to "/projects/" + @project.id.to_s + "/" + @parent_path do
-                %span.glyphicon.glyphicon-folder-close.invisible
-                \..
-        - @object.each_tree do |tree|
-          %tr
-            %td
-              = link_to("/projects/" + @project.id.to_s + "/" + @path + tree[:name]) do
-                %span.glyphicon.glyphicon-folder-close
-                = tree[:name]
-        - @object.each_blob do |blob|
-          %tr
-            %td
-              = link_to("/projects/" + @project.id.to_s + "/" + @path + blob[:name]) do
-                %span.glyphicon.glyphicon-file
-                = blob[:name]
+      %h2 Browse
+      %table.table.table-hover
+        %tbody
+          - if @parent_path != nil
+            %tr
+              %td
+                = link_to "/projects/" + @project.id.to_s + "/" + @parent_path do
+                  %span.glyphicon.glyphicon-folder-close.invisible
+                  \..
+          - @object.each_tree do |tree|
+            %tr
+              %td
+                = link_to("/projects/" + @project.id.to_s + "/" + @path + tree[:name]) do
+                  %span.glyphicon.glyphicon-folder-close
+                  = tree[:name]
+          - @object.each_blob do |blob|
+            %tr
+              %td
+                = link_to("/projects/" + @project.id.to_s + "/" + @path + blob[:name]) do
+                  %span.glyphicon.glyphicon-file
+                  = blob[:name]
 
   .col-md-10
+    .row
+      .col-md-12
+        %h2 5 Files to Fix
+        #five-fixes.row.file-row
+          .col-md-2.col-md-offset-1
+            %span.glyphicon.glyphicon-file
+            %h4 FileToFix1.rb
+          - 4.times do |i|
+            .col-md-2
+              %span.glyphicon.glyphicon-file
+              %h4 FileToFix#{i+2}.rb
+    .row
+      .col-md-12
+        %h2 5 Files to Watch
+        #five-watches.row.file-row
+          .col-md-2.col-md-offset-1
+            %span.glyphicon.glyphicon-file
+            %h4 FileToWatch1.rb
+          - 4.times do |i|
+            .col-md-2
+              %span.glyphicon.glyphicon-file
+              %h4 FileToWatch#{i+2}.rb
     #progress.hidden
       %h2 Background Processing
       %p We're calculating metrics for your project - shouldn't take long!
