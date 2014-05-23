@@ -33,21 +33,21 @@ window.currentMin = () ->
 window.currentMax = () ->
   checkAndCalculateMetricStats().max
 
+refreshScale = () ->
+  d3.scale.sqrt()
+      .domain([0,0.5,1].map(d3.interpolate(currentMin(), currentMax())))
+      .range(["green","yellow","red"])
+
 window.color = (commit_file) ->
   score = getMetricScore(file_metrics[commit_file.id],current_metric_id)
   if score != null
-    red_green_scale = d3.scale.sqrt()
-        .domain([0,0.5,1].map(d3.interpolate(currentMin(), currentMax())))
-        .range(["green","yellow","red"])
+    red_green_scale = refreshScale()
     return red_green_scale(score)
   else
     return "#ccc"
 
 metric_selector.on("change", () ->
   window.current_metric_id = parseInt(this.value)
-  red_green_scale = d3.scale.sqrt()
-            .domain([0,0.5,1].map(d3.interpolate(currentMin(), currentMax())))
-            .range(["green","yellow","red"])
   if window.nodes
     nodes.transition().style("fill", (d) -> color(d))
   if window.files
@@ -59,9 +59,6 @@ project_selector.on("change", () ->
   window.current_compare_project_id = parseInt(this.value)
   min = metric_stats[current_compare_project_id][current_metric_id - 1].min
   max = metric_stats[current_compare_project_id][current_metric_id - 1].max
-  red_green_scale = d3.scale.sqrt()
-            .domain([0,0.5,1].map(d3.interpolate(currentMin(), currentMax())))
-            .range(["green","yellow","red"])
   if window.nodes != undefined
     nodes.transition().style("fill", (d) -> color(d))
   if window.files != undefined
