@@ -92,10 +92,9 @@ class ProjectsController < ApplicationController
     @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}
     @jsonFileMetrics = @fileMetrics.to_json
     @jsonMetricStats = MetricStats.all.group_by{|ms| ms.project_id}.to_json
-
     respond_to do |format|
       format.json { render json: {commits: @commits, commit_files: @commitFiles, file_metrics: @fileMetrics, commit_files_by_path: @commitFilesByPath} }
-      format.all { render view }
+      format.all { render view, :formats => [:html], :content_type => Mime::HTML }
     end
   end
 
