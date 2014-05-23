@@ -20,9 +20,9 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     @repo = Rugged::Repository.new(@project.repo_local_url)
     @object = @repo.lookup(@repo.head.target.oid).tree
-    
+
     @path = ""
-    
+
     if params[:path] != nil
       @path = params[:path]
       if params[:format]
@@ -39,19 +39,21 @@ class ProjectsController < ApplicationController
     if @object.type == :blob
       view = "show_file"
 
-      @fileCommits = Hash[@commitFiles.map{|cf| [cf.commit_id, {:commit => cf.commit, :file_contents => @repo.lookup(cf.git_hash).content}]}]
+      pathCommitFiles = @project.commit_files.where(:path => @path).sort_by{ |cf| cf.commit.date}
 
-      if @commitFiles.size > 1
+      @fileCommits = Hash[pathCommitFiles.map{|cf| [cf.commit_id, {:commit => cf.commit, :file_contents => @repo.lookup(cf.git_hash).content}]}]
+
+      if pathCommitFiles.size > 1
         data_table = GoogleVisualr::DataTable.new
         data_table.new_column('datetime', 'date')
         # data_table.new_column('number', 'flog')
         Metric.all.each do |metric|
           data_table.new_column('number', metric.name)
         end
-        
+
         metric_data = []
 
-        @commitFiles.each do |cf|
+        pathCommitFiles.each do |cf|
           commit = cf.commit
           metrics = cf.file_metrics
           file_metric_data = [DateTime.parse(commit.date.to_s)]
