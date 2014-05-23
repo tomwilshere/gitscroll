@@ -18,12 +18,12 @@
 
 .d3-tip {
   line-height: 1;
-  font-weight: bold;
   padding: 12px;
   background: rgba(0, 0, 0, 0.8);
   color: #fff;
   border-radius: 2px;
-  width: 300px;
+  width: 350px;
+  font-size: 12px;
 }
 
 /* Creates a small triangle extender for the tooltip */
@@ -44,6 +44,29 @@
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
+}
+
+.d3-tip img {
+  float: left;
+  border-radius: 24px;
+}
+
+.d3-tip .commit-author {
+  float: left;
+  width: 268px;
+  margin-left: 10px;
+}
+
+.d3-tip .author-name {
+  font-weight: bold;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.d3-tip .commit-date {
+  margin-top: 10px;
+  width: 100%;
+  float: left;
 }
 
 .input-sm {

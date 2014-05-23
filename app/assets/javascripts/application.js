@@ -20,5 +20,6 @@
 //= require_tree ../../../vendor/assets/javascripts/prettify
 //= require d3
 //= require d3.tip
+//= require mustache
 //= require diff
 //= require_tree .

@@ -66,11 +66,25 @@
     %h2 File Network
     #chart-network.chart
 
+%script#tip-template{:type => "x-tmpl-mustache"}
+  %h4 {{filename}}
+  %h5 {{metric_name}} score: {{score}}
+  %h5 Commit Info
+  = image_tag "http://gravatar.com/avatar/{{author.email_md5}}?s=48&d=mm", alt: "{{author.name}}", class: "tip-avatar"
+  .commit-author
+    %span.author-name
+      {{author.name}}
+    %br
+    {{commit_message}}
+  %br
+  .commit-date
+    {{commit_date}}
+
 %script
   = "var path = \"#{@path}\";".html_safe
   var commits =
   = @jsonCommits.html_safe
-  var commit_files = 
+  var commit_files =
   = @jsonCommitFiles.html_safe
   var commit_files_by_path =
   = @jsonCommitFilesByPath.html_safe
@@ -85,4 +99,5 @@
   = @jsonMetricStats.html_safe
   var project =
   = @project.to_json.html_safe
-    
+  var authors =
+  = @authors.to_json.html_safe

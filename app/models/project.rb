@@ -3,6 +3,7 @@ class Project < ActiveRecord::Base
   has_many :commit_files, through: :commits
   has_many :file_metrics, through: :commits
   has_many :metric_stats, dependent: :destroy
+  has_many :authors, through: :commits
   after_initialize :generate_hash
 
   # Have the model assign itself a unique hash folder if

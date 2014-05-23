@@ -19,23 +19,27 @@ window.Object.size = (obj) ->
 tip = d3.tip()
 		.attr('class', 'd3-tip')
 		.offset([-10,0-$("#chart-network").width()/2])
-		# .direction('w')
 		.html((d) ->
-			html = "File: " + d.path
-			score = getMetricScore(file_metrics[d.id], current_metric_id)
-			if score != null
-				html += "<br>Score: " + score
-			html += " commit message: " + d3.select(this.parentNode).datum().message
-			return html
+			template = $('#tip-template').html()
+			commit = d3.select(this.parentNode).datum()
+			view = {
+				author: authors[commit.author_id]
+				filename: d.path.split("/").slice(-1)[0]
+				score: getMetricScore(file_metrics[d.id], current_metric_id) || "Not calculated"
+				commit_message: commit.message
+				metric_name: $('#metric_id_metric_name option:selected').text()
+				commit_date: new Date(commit.date).toUTCString()
+			}
+			Mustache.render(template, view)
 		)
 
 
-width = 1000
-height = 400
+width = $("#chart-network").width()
+height = $("#chart-network").height()
 
 svgContainer = d3.select("#chart-lifeline")
 		.append("svg")
-		.attr("width", $("#chart-network").width())
+		.attr("width", width)
 		.attr("height", height)
 		.call(d3.behavior.zoom().scaleExtent([1,Infinity]).on("zoom", redraw));
 
@@ -55,7 +59,7 @@ window.identifyGradientPoints = () ->
 			while i < metrics.length
 				difference = metrics[i].score - metrics[i-1].score
 				if difference > pathDifference
-					pathDifference = difference 
+					pathDifference = difference
 					pathCommitId = metrics[i].commit
 				i++
 		if pathCommitId
@@ -138,14 +142,14 @@ refreshLifelineData = () ->
 
 
 
-	files.attr("height", $("#chart-lifeline").height() / Object.size(file_ordering))	
+	files.attr("height", $("#chart-lifeline").height() / Object.size(file_ordering))
 
 	window.deletions = commit_groups.selectAll("rect.deletions")
 			.data(((d) ->
 				if d.deleted_files && d.deleted_files != ""
 					d.deleted_files.split(",")
 						.filter((df) -> df.indexOf(path) == 0)
-						.map((df) -> {commit: d, deleted_file: df}) 
+						.map((df) -> {commit: d, deleted_file: df})
 				else
 					[]
 				), (d) -> d.commit.index + d.deleted_file)
@@ -159,7 +163,7 @@ refreshLifelineData = () ->
 			.attr("x", (d) ->
 				commit_scale(d.commit.commit_number)
 			)
-			.attr("y", (d) -> 
+			.attr("y", (d) ->
 				file_scale(d.deleted_file)
 			)
 
@@ -167,7 +171,7 @@ refreshLifelineData = () ->
 			.attr("x", (d) ->
 				commit_scale(d.commit.commit_number)
 			)
-			.attr("y", (d) -> 
+			.attr("y", (d) ->
 				file_scale(d.deleted_file)
 			)
 
@@ -180,7 +184,7 @@ refreshLifelineData()
 deletions.attr("y", (d) -> file_scale(d.deleted_file))
 		.attr("height", $("#chart-lifeline").height() / Object.size(file_ordering))
 
-$('#gradient-points').on("change mousemove", () -> 
+$('#gradient-points').on("change mousemove", () ->
 	identifyGradientPoints()
 	$('#gradient-points-count').html($(this).val())
 )
@@ -196,6 +200,7 @@ updateLifeline = (data) ->
 	window.commit_files = data.commit_files
 	window.file_metrics = data.file_metrics
 	window.commit_files_by_path = data.commit_files_by_path
+	window.authors = data.authors
 	checkAndCalculateMetricStats(true)
 	refreshLifelineData()
 	if window.nodes != undefined

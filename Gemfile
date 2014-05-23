@@ -73,6 +73,7 @@ gem 'syntax'
 gem 'resque'
 
 gem 'jquery-rails'
+gem 'mustache-js-rails'
 
 # protection
 gem 'guard'

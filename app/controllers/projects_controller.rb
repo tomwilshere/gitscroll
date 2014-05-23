@@ -94,8 +94,9 @@ class ProjectsController < ApplicationController
     @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}
     @jsonFileMetrics = @fileMetrics.to_json
     @jsonMetricStats = MetricStats.all.group_by{|ms| ms.project_id}.to_json
+    @authors = Hash[@project.authors.uniq.map{|a| [a.id, {name: a.name, email: a.email, email_md5: Digest::MD5.hexdigest(a.email.strip.downcase)}]}]
     respond_to do |format|
-      format.json { render json: {commits: @commits, commit_files: @commitFiles, file_metrics: @fileMetrics, commit_files_by_path: @commitFilesByPath} }
+      format.json { render json: {commits: @commits, commit_files: @commitFiles, file_metrics: @fileMetrics, commit_files_by_path: @commitFilesByPath, authors: @authors} }
       format.all { render view, :formats => [:html], :content_type => Mime::HTML }
     end
   end
