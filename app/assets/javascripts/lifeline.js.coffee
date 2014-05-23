@@ -23,7 +23,7 @@ tip = d3.tip()
 		.html((d) ->
 			html = "File: " + d.path
 			score = getMetricScore(file_metrics[d.id], current_metric_id)
-			if score
+			if score != null
 				html += "<br>Score: " + score
 			html += " commit message: " + d3.select(this.parentNode).datum().message
 			return html
