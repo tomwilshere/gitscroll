@@ -4,10 +4,8 @@ if commits.length < project.num_commits
 	$('#progress').removeClass("hidden")
 	d3.select('#progress-bar').transition().style("width", (commits.length / project.num_commits) * 100 + "%")
 
-# redraw function for panning and zooming
-redraw = () ->
-	svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
-	return
+$(window).resize ->
+	refreshLifelineData()
 
 window.Object.size = (obj) ->
 	size = 0
@@ -18,7 +16,7 @@ window.Object.size = (obj) ->
 
 tip = d3.tip()
 		.attr('class', 'd3-tip')
-		.offset([-10,0-$("#chart-network").width()/2])
+		.offset([-10,0-$("#chart-lifeline").width()/2])
 		.html((d) ->
 			template = $('#tip-template').html()
 			commit = d3.select(this.parentNode).datum()
@@ -34,14 +32,13 @@ tip = d3.tip()
 		)
 
 
-width = $("#chart-network").width()
-height = $("#chart-network").height()
+width = $("#chart-lifeline").width()
+height = $("#chart-lifeline").height()
 
 svgContainer = d3.select("#chart-lifeline")
 		.append("svg")
 		.attr("width", width)
 		.attr("height", height)
-		.call(d3.behavior.zoom().scaleExtent([1,Infinity]).on("zoom", redraw));
 
 svg = svgContainer.append('svg:g')
 
@@ -88,7 +85,10 @@ window.identifyGradientPoints = () ->
 
 window.file_ordering = {}
 
-refreshLifelineData = () ->
+window.refreshLifelineData = () ->
+	svgContainer.attr("width", $('#chart-lifeline').width())
+		.attr("height", $('#chart-lifeline').height())
+
 	window.file_scale = (path) ->
 		if file_ordering[path] == undefined
 			file_ordering[path] = Object.size(file_ordering)

@@ -99,8 +99,14 @@
 }
 
 #options.affix {
-  position: fixed;
-  top: 0px;
+  position: static;
+}
+
+@media(min-width: 768px) {
+  #options.affix {
+    position: fixed;
+    top: 0px;
+  }
 }
 
 #gradient-points {
