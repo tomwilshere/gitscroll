@@ -1,15 +1,17 @@
-%p#notice= notice
-%h1
-  = @project.name
-%p
-  %b Repo remote url:
-  = @project.repo_remote_url
-%p
-  %b Repo local url:
-  = @project.repo_local_url
-= link_to 'Edit', edit_project_path(@project)
-|
-= link_to 'Back', projects_path
+.project-info
+  %p#notice= notice
+  %h1
+    = @project.name
+  %p
+    %b Repo remote url:
+    = @project.repo_remote_url
+  %p
+    %b Repo local url:
+    = @project.repo_local_url
+  = link_to 'Edit', edit_project_path(@project)
+  |
+  = link_to 'Back', projects_path
+  %hr
 
 -# %h2 Commit Information
 -# %dl
@@ -17,10 +19,9 @@
 -#   %dd= @commit.message
 -#   %dt time
 -#   %dd= @commit.time
-%hr
 
 .row
-  .col-md-2
+  #sidebar.col-md-2
     #options
       %h2 Options
       Metric:

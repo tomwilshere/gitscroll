@@ -1,5 +1,14 @@
 return if window.commits == undefined || d3Network == null
 
+$('#options').affix({
+  offset: {
+    top: () ->
+      101 + $('.project-info').height()
+    # bottom: () ->
+    #   this.bottom = $('.footer').outerHeight(true)
+  }
+})
+
 # redraw function for panning and zooming
 redraw = () ->
     vis.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
