@@ -12,6 +12,12 @@
 
 .file-row {
   text-align: center;
+  overflow-y: hidden;
+  height: 140px;
+}
+
+.file-row .col-md-4 {
+  height: 140px;
 }
 
 .file-row span {
@@ -25,20 +31,11 @@
   color: #ccc;
 }
 
-#five-fixes {
-  overflow-y: hidden;
-  height: 140px;
-}
-
-#five-fixes .col-md-4 {
-  height: 140px;
-}
-
-#five-fixes h4 {
+.file-row h4 {
   color: #EBEBEB;
 }
 
-#five-fixes a {
+.file-row a {
   text-decoration: none;
 }
 

@@ -7,23 +7,18 @@ if commits.length < project.num_commits
 $(window).resize ->
 	refreshLifelineData()
 
-window.Object.size = (obj) ->
-	size = 0
-	key = undefined
-	for key of obj
-		size++  if obj.hasOwnProperty(key)
-	size
-
 tip = d3.tip()
 		.attr('class', 'd3-tip')
 		.offset([-10,0-$("#chart-lifeline").width()/2])
 		.html((d) ->
 			template = $('#tip-template').html()
 			commit = d3.select(this.parentNode).datum()
+			score = getMetricScore(file_metrics[d.id], current_metric_id)
+			score = "Not Calculated" if score == null
 			view = {
 				author: authors[commit.author_id]
 				filename: d.path.split("/").slice(-1)[0]
-				score: getMetricScore(file_metrics[d.id], current_metric_id) || "Not calculated"
+				score: score
 				commit_message: commit.message
 				metric_name: $('#metric_id_metric_name option:selected').text()
 				commit_date: new Date(commit.date).toUTCString()
@@ -44,25 +39,8 @@ svg = svgContainer.append('svg:g')
 
 svg.call(tip)
 
-window.identifyGradientPoints = () ->
-	pathMaxGradients = new Array()
-	for path of commit_files_by_path
-		pathDifference = 0
-		pathCommitId = null
-		cfs = commit_files_by_path[path]
-		metrics = cfs.map((cf) -> {commit: cf.commit_id, score: getMetricScore(file_metrics[cf.id],current_metric_id)})
-		if metrics.length > 1
-			i = 1
-			while i < metrics.length
-				difference = metrics[i].score - metrics[i-1].score
-				if difference > pathDifference
-					pathDifference = difference
-					pathCommitId = metrics[i].commit
-				i++
-		if pathCommitId
-			pathMaxGradients.push({path: path, commit_id: pathCommitId, gradient: pathDifference})
-	gradientPoints = pathMaxGradients.sort((a,b) -> b.gradient - a.gradient).slice(0,$('#gradient-points').val())
-
+window.updateGradientCircles = () ->
+	gradientPoints = identifyGradientPoints().slice(0,$('#gradient-points').val())
 	gradientCircles = svg.selectAll("circle")
 			.data(gradientPoints, (d) -> d.path + "@" + d.commit_id)
 
@@ -78,7 +56,8 @@ window.identifyGradientPoints = () ->
 			.remove()
 
 	gradientCircles.transition()
-			.attr("cx", (d) -> commit_scale(commits.filter((c) -> c.id == d.commit_id)[0].commit_number))
+			.attr("cx", (d) ->
+				commit_scale(commits.filter((c) -> c.id == d.commit_id)[0].commit_number))
 			.attr("cy", (d) -> file_scale(d.path) + ($("#chart-lifeline").height() / Object.size(file_ordering))/2)
 
 	gradientPoints
@@ -177,7 +156,7 @@ window.refreshLifelineData = () ->
 
 	deletions.attr("height", $("#chart-lifeline").height() / Object.size(file_ordering))
 
-	identifyGradientPoints()
+	updateGradientCircles()
 
 refreshLifelineData()
 
@@ -185,7 +164,7 @@ deletions.attr("y", (d) -> file_scale(d.deleted_file))
 		.attr("height", $("#chart-lifeline").height() / Object.size(file_ordering))
 
 $('#gradient-points').on("change mousemove", () ->
-	identifyGradientPoints()
+	updateGradientCircles()
 	$('#gradient-points-count').html($(this).val())
 )
 

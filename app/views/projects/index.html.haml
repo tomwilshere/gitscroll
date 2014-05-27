@@ -1,0 +1,36 @@
+.jumbotron
+  %h1
+    = image_tag "favicon.png"
+    Welcome to Gitrics
+  %p
+    Gitrics mines your project's git history to produce recommendations and graphs that help you improve the quality of your code.
+  %p
+    %a.btn.btn-primary.btn-lg{:href => "#projects"}
+      Get Started!
+%h1#projects Browse Projects
+.row
+- @projects.each do |project|
+  .col-md-3
+    .well
+      %h2= project.name
+      %p
+        = link_to "View", project, {:class => "btn btn-info"}
+
+%table.table.table-striped
+  %tr
+    %th Name
+    %th Repo remote url
+    %th Repo local url
+    %th
+    %th
+    %th
+  - @projects.each do |project|
+    %tr
+      %td= project.name
+      %td= project.repo_remote_url
+      %td= project.repo_local_url
+      %td= link_to 'Show', project
+      %td= link_to 'Edit', edit_project_path(project)
+      %td= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' }
+%br/
+= link_to 'New Project', new_project_path

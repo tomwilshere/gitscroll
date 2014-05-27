@@ -22,4 +22,5 @@
 //= require d3.tip
 //= require mustache
 //= require diff
+//= require_tree ./utils
 //= require_tree .

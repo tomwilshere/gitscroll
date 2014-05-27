@@ -22,16 +22,37 @@ window.updateFixFiles = () ->
 			.append("div")
 			.attr("class", "col-md-4")
 			.html(updateFixFileContent)
-			# .style("color", (d) ->
-			# 	commit_file = commit_files[d.commit].filter((cf) -> cf.id == d.commit_file_id)[0]
-			# 	color(commit_file))
+
+watches = d3.select("#five-watches")
+window.updateWatchFiles = () ->
+	gradientPoints = identifyGradientPoints((a,b) ->
+		aDate = new Date(commits.filter((c) -> c.id == a.commit_id)[0].date)
+		bDate = new Date(commits.filter((c) -> c.id == b.commit_id)[0].date)
+		console.log bDate - aDate
+		return bDate - aDate
+	)
+	filesToWatch = gradientPoints.map((gp) -> {commit: gp.commit_id, commit_file_id: commit_files[gp.commit_id].filter((cf) -> cf.path == gp.path)[0].id})
+
+	watches.selectAll(".col-md-4").remove()
+	watchFiles = watches.selectAll(".col-md-4")
+			.data(filesToWatch)
+
+	watchFiles.enter()
+			.append("div")
+			.attr("class", "col-md-4")
+			.html(updateFixFileContent)
+
+	gradientPoints
+
+
 
 updateFixFiles()
+updateWatchFiles()
 
 $('.remove-file').click((e) ->
 	if prompt("Why is this file a false positive?")
 		$(this).parent().parent().fadeOut())
 
 $('.ok-file').click((e) ->
-	$(this).css("color","green")
-	$(this).parent().parent().fadeOut())
+	$(this).css("color","green"))
+	# $(this).parent().parent().fadeOut())

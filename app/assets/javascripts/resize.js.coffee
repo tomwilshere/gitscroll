@@ -1,6 +1,5 @@
 autoSizeText = ->
     elements = $('.resize')
-    console.log elements
     return if elements.length < 0
 
     for el in elements

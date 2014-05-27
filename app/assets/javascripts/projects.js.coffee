@@ -88,7 +88,6 @@ window.nodes = vis.selectAll("circle")
            .on("contextmenu", rightclick)
            .call(force.drag)
            .on("click", (d) -> 
-              console.log d
               document.location.href = "/projects/" + commits[0].project_id + "/" + d.path )
 
 nodes.append("title")
