@@ -59,26 +59,14 @@
   .col-md-10
     .row
       .col-md-12
-        %h2 5 Files to Fix
+        %h2 3 Files to Fix
+        %p These are your worst files across all metrics at the moment
         #five-fixes.row.file-row
-          .col-md-2.col-md-offset-1
-            %span.glyphicon.glyphicon-file
-            %h4 FileToFix1.rb
-          - 4.times do |i|
-            .col-md-2
-              %span.glyphicon.glyphicon-file
-              %h4 FileToFix#{i+2}.rb
     .row
       .col-md-12
-        %h2 5 Files to Watch
+        %h2 3 Files to Watch
+        %p These files have seen the biggest increase in metric score over the last 30 commits.
         #five-watches.row.file-row
-          .col-md-2.col-md-offset-1
-            %span.glyphicon.glyphicon-file
-            %h4 FileToWatch1.rb
-          - 4.times do |i|
-            .col-md-2
-              %span.glyphicon.glyphicon-file
-              %h4 FileToWatch#{i+2}.rb
     #progress.hidden
       %h2 Background Processing
       %p We're calculating metrics for your project - shouldn't take long!
@@ -105,6 +93,14 @@
   .commit-date
     {{commit_date}}
 
+%script#fix-file-template{:type => "x-tmpl-mustache"}
+  %a{:href => "{{path}}"}
+    %span.glyphicon.glyphicon-file{:style=> "color: {{color}}"}
+    %h4 {{filename}} ({{score}})
+  %p
+    %span.glyphicon.glyphicon-ok-sign.tick-cross.ok-file
+    %span.glyphicon.glyphicon-remove-sign.tick-cross.remove-file
+
 %script
   = "var path = \"#{@path}\";".html_safe
   var commits =
@@ -126,3 +122,5 @@
   = @project.to_json.html_safe
   var authors =
   = @authors.to_json.html_safe
+  var filesToFix =
+  = @filesToFix.to_json.html_safe

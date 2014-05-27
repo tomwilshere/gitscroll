@@ -38,4 +38,26 @@ class Project < ActiveRecord::Base
     super
   end
 
+  def calculateFilesToFix(numFiles)
+    res = Hash.new
+    fileHash = Hash.new(0)
+    commit_files = self.commit_files.group_by{|cf| cf.path}.values
+    Metric.all.each do |metric|
+      res[metric.id] = commit_files
+        .map{|cfs| {commit_file: cfs.last.id, score: cfs.last.file_metrics.where(:metric_id => metric.id)[0]? cfs.last.file_metrics.where(:metric_id => metric.id)[0].score : -1 }}
+        .group_by{|cf| cf[:score]}.to_a
+        .sort_by{|cf| cf[0]}.reverse
+      res[metric.id].each_with_index do |files, index|
+        files[1].each do |file|
+          fileHash[file[:commit_file]] = fileHash[file[:commit_file]] + index
+        end
+      end
+    end
+
+    return fileHash.to_a.
+            sort_by{|f| f[1]}
+            .map{|f| {commit: CommitFile.find(f[0]).commit_id, commit_file_id: f[0]}}
+            .take(numFiles)
+  end
+
 end

@@ -54,6 +54,7 @@ metric_selector.on("change", () ->
   if window.files
     files.transition().style("fill", (d) -> color(d))
   identifyGradientPoints()
+  updateFixFiles()
 )
 
 project_selector.on("change", () ->
@@ -64,4 +65,5 @@ project_selector.on("change", () ->
     nodes.transition().style("fill", (d) -> color(d))
   if window.files != undefined
     files.transition().style("fill", (d) -> color(d))
+  updateFixFiles()
 )

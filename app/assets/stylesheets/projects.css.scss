@@ -19,13 +19,32 @@
   width: 100%;
 }
 
-#five-fixes span {
-  color: red;
+.file-row span.tick-cross {
+  font-size: 20px;
+  width: auto;
+  color: #ccc;
 }
 
-#five-watches span {
-  color: yellow;
+#five-fixes {
+  overflow-y: hidden;
+  height: 140px;
 }
+
+#five-fixes .col-md-4 {
+  height: 140px;
+}
+
+#five-fixes h4 {
+  color: #EBEBEB;
+}
+
+#five-fixes a {
+  text-decoration: none;
+}
+
+// #five-watches span {
+//   color: yellow;
+// }
 
 .chart {
   height: 350px;

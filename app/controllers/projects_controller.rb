@@ -86,6 +86,8 @@ class ProjectsController < ApplicationController
       @d3Network = makeD3Network(@commits.first, @object, @path, @commits.size).to_json
     end
 
+    @filesToFix = @project.calculateFilesToFix(6)
+
     @jsonCommits = @commits.to_json
     @commitFilesByPath = @commitFiles.group_by{|cf| cf.path}
     @jsonCommitFilesByPath = @commitFilesByPath.to_json
@@ -100,7 +102,6 @@ class ProjectsController < ApplicationController
       format.all { render view, :formats => [:html], :content_type => Mime::HTML }
     end
   end
-
 
   # GET /projects/new
   # GET /projects/new.json
