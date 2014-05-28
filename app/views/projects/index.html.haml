@@ -5,8 +5,7 @@
   %p
     Gitrics mines your project's git history to produce recommendations and graphs that help you improve the quality of your code.
   %p
-    %a.btn.btn-primary.btn-lg{:href => "#projects"}
-      Get Started!
+    = link_to "Add your project!", new_project_path, :class => "btn btn-primary btn-lg"
 %h1#projects Browse Projects
 .row
 - panelClasses = { 1 => "panel-primary", 2 => "panel-success", 3 => "panel-warning", 4 => "panel-danger", 5 => "panel-info"}
