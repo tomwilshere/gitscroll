@@ -28,7 +28,6 @@ window.updateWatchFiles = () ->
 	gradientPoints = identifyGradientPoints((a,b) ->
 		aDate = new Date(commits.filter((c) -> c.id == a.commit_id)[0].date)
 		bDate = new Date(commits.filter((c) -> c.id == b.commit_id)[0].date)
-		console.log bDate - aDate
 		return bDate - aDate
 	)
 	filesToWatch = gradientPoints.map((gp) -> {commit: gp.commit_id, commit_file_id: commit_files[gp.commit_id].filter((cf) -> cf.path == gp.path)[0].id})

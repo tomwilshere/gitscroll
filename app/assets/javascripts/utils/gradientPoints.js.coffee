@@ -18,7 +18,4 @@ window.identifyGradientPoints = (sortFunction = gradientSort) ->
 				i++
 		if pathCommitId
 			pathMaxGradients.push({path: path, commit_id: pathCommitId, gradient: pathDifference})
-	console.log pathMaxGradients
-	gradientPoints = pathMaxGradients.sort(sortFunction)
-	console.log gradientPoints
-	gradientPoints
+	return pathMaxGradients.sort(sortFunction)

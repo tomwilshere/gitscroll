@@ -56,6 +56,8 @@ metric_selector.on("change", () ->
   updateGradientCircles()
   updateFixFiles()
   updateWatchFiles()
+  stopChurnAnimation()
+  startChurnAnimation()
 )
 
 project_selector.on("change", () ->
