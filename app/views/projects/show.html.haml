@@ -65,7 +65,7 @@
     .row
       .col-md-12
         %h2 3 Files to Watch
-        %p These files have seen the biggest increase in metric score over the last 30 commits.
+        %p These files have seen the biggest increase in metric score in recent commits.
         #five-watches.row.file-row
     #progress.hidden
       %h2 Background Processing
@@ -75,7 +75,15 @@
           %span.sr-only 45% Complete
     %h2 Project Lifeline
     #chart-lifeline.chart
-
+    %h2 Churn animation
+    #chart-churn.chart
+    .btn-group
+      %button#churn-play.btn.btn-primary
+        %span.glyphicon.glyphicon-play
+      %button#churn-pause.btn.btn-primary
+        %span.glyphicon.glyphicon-pause
+      %button#churn-stop.btn.btn-primary
+        %span.glyphicon.glyphicon-stop
     %h2 File Network
     #chart-network.chart
 
