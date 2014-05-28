@@ -80,4 +80,6 @@ Gitscroll::Application.configure do
 
   # font precompiling
   config.assets.precompile << /\.(?:svg|eot|woff|ttf)$/
+
+  GA.tracker = "UA-51460712-1"
 end

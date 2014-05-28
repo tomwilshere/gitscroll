@@ -71,6 +71,7 @@ GEM
       ruby_parser (~> 3.1, > 3.1.0)
       sexp_processor (~> 4.4)
     formatador (0.2.4)
+    google-analytics-rails (0.0.5)
     google_visualr (2.3.0)
     grit (2.5.0)
       diff-lcs (~> 1.1)
@@ -241,6 +242,7 @@ DEPENDENCIES
   d3-tip-rails
   flay
   flog
+  google-analytics-rails
   google_visualr
   grit
   guard
