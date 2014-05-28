@@ -9,28 +9,18 @@
       Get Started!
 %h1#projects Browse Projects
 .row
-- @projects.each do |project|
+- panelClasses = { 1 => "panel-primary", 2 => "panel-success", 3 => "panel-warning", 4 => "panel-danger", 5 => "panel-info"}
+- @projects.each_with_index do |project, index|
   .col-md-3
-    .well
-      %h2= project.name
-      %p
-        = link_to "View", project, {:class => "btn btn-info"}
-
-%table.table.table-striped
-  %tr
-    %th Name
-    %th Repo remote url
-    %th Repo local url
-    %th
-    %th
-    %th
-  - @projects.each do |project|
-    %tr
-      %td= project.name
-      %td= project.repo_remote_url
-      %td= project.repo_local_url
-      %td= link_to 'Show', project
-      %td= link_to 'Edit', edit_project_path(project)
-      %td= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' }
-%br/
-= link_to 'New Project', new_project_path
+    .panel{:class => panelClasses[index % 5 +1]}
+      .panel-heading
+        %h3.panel-title= project.name
+      .panel-body
+        %p
+          .btn-group
+            = link_to "View", project, {:class => "btn btn-darker", :type => "button"}
+            %button.btn.btn-darker.dropdown-toggle{"data-toggle" => "dropdown", :type => "button"}
+              %span.caret
+            %ul.dropdown-menu
+              %li= link_to 'Edit', edit_project_path(project)
+              %li= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' }
