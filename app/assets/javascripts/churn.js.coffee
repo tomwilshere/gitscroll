@@ -18,8 +18,28 @@ for _, commit of commits
 
 maxChurn = currentMaxChurn()
 
+tip = d3.tip()
+		.attr('class', 'd3-tip')
+		.html((d) ->
+			template = $('#tip-template').html()
+			commit = d.commit
+			score = getMetricScore(file_metrics[d.id], current_metric_id)
+			score = "Not Calculated" if score == null
+			view = {
+				author: authors[commit.author_id]
+				filename: d.path.split("/").slice(-1)[0]
+				score: score
+				commit_message: commit.message
+				metric_name: $('#metric_id_metric_name option:selected').text()
+				commit_date: new Date(commit.date).toUTCString()
+			}
+			Mustache.render(template, view)
+		)
+
+svgContainer.call(tip)
+
 updateChurnChart = () ->
-	data = Object.keys(pathToCommitFile)
+	data = Object.keys(pathToCommitFile).map((path) -> pathToCommitFile[path])
 
 	window.churnCircles = svgContainer.selectAll("circle")
 			.data(data)
@@ -34,21 +54,23 @@ updateChurnChart = () ->
 
 	churnCircles.enter()
 			.append("circle")
-			.style("fill", (d) -> color(pathToCommitFile[d]))
+			.style("fill", (d) -> color(d))
 			.attr("cx", (d) ->
-				churnScale(pathCount[d])
+				churnScale(pathCount[d.path])
 			)
 			.attr("cy", (d) ->
-				complexityScale(getMetricScore(file_metrics[pathToCommitFile[d].id], current_metric_id))
+				complexityScale(getMetricScore(file_metrics[d.id], current_metric_id))
 			)
 				# complexityScale(getMetricScore(file_metrics[pathToCommitFile[d]], current_metric_id)))
 			.attr("r", 5)
+			.on('mouseover', tip.show)
+			.on('mouseout', tip.hide)
 
 	churnCircles.transition()
 			.duration(churnStepLength*5)
-			.style("fill", (d) -> color(pathToCommitFile[d]))
-			.attr("cx", (d) -> churnScale(pathCount[d]))
-			.attr("cy", (d) -> complexityScale(getMetricScore(file_metrics[pathToCommitFile[d].id], current_metric_id)))
+			.style("fill", (d) -> color(d))
+			.attr("cx", (d) -> churnScale(pathCount[d.path]))
+			.attr("cy", (d) -> complexityScale(getMetricScore(file_metrics[d.id], current_metric_id)))
 
 	churnCircles.exit()
 			.remove()
@@ -59,7 +81,11 @@ commit_number = 0
 animation_timer = $.timer(->
 	processCommitChurn()
 	commit_number++
-	animation_timer.stop() if commit_number == commits.length - 1
+	if commit_number == commits.length - 1
+		animation_timer.stop()
+		commit_number = 0
+		pathToCommitFile = {}
+		pathCount = {}
 	return)
 window.startChurnAnimation = () ->
 	animation_timer.set({time: churnStepLength, autostart: true})
@@ -82,6 +108,7 @@ processCommitChurn = () ->
 		# increment path count for this commit file's path
 		pathCount[commit_file.path] = (pathCount[commit_file.path] || 0) + 1
 		# update the path to commit_file hash
+		commit_file.commit = commit
 		pathToCommitFile[commit_file.path] = commit_file
 	updateChurnChart()
 

@@ -74,8 +74,36 @@
         #progress-bar.progress-bar{"aria-valuemax" => "100", "aria-valuemin" => "0", "aria-valuenow" => "0", :role => "progressbar", :style => "width: 0%"}
           %span.sr-only 45% Complete
     %h2 Project Lifeline
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          %a{"data-toggle" => "collapse", :href => "#collapseOne"}
+            About
+      #collapseOne.panel-collapse.collapse
+        .panel-body
+          The project lifeline plots the history of the project over time, showing the quality of each file at each commit specified by the given metric. The x-axis is linear by commit number rather than linear by time.
+          %br
+          Hovering over the files on the graph will show you information about the file at that point in time - its metric score, the committer and commit message, and the date.
     #chart-lifeline.chart
-    %h2 Churn animation
+    %h2 Turbulence animation
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          %a{"data-toggle" => "collapse", :href => "#collapseTwo"}
+            About
+      #collapseTwo.panel-collapse.collapse
+        .panel-body
+          This animation plots turbulence (churn - the number of times a file is edited against the currently selected metric) over time. It's based on Michael Feathers'
+          =link_to "recent work", "http://www.stickyminds.com/article/getting-empirical-about-refactoring"
+          on project churn and complexity.As files are edited more they move to the right, and as their metric score increase, they move upwards.
+          %br
+          Files in the bottom left quadrant are "just right, first time" files with a low metric score and few edits
+          %br
+          Files in the top left quadrant are dumps of complicated code that are difficult to refactor. Refactoring may see these move right and downwards.
+          %br
+          Files in the top right quadrant are balls of mud that get more and more complicated each time somebody changes the file.
+          %br
+          Files in the bottom right quadrant are normally configuration files or functional parts of the codebase that have been well looked after.
     #chart-churn.chart
     .btn-group
       %button#churn-play.btn.btn-primary
