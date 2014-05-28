@@ -1,7 +1,7 @@
 return if !window.project?
 window.getMetricScore = (file_metric, metric_id) ->
   try
-    return file_metric.filter((fm) -> fm.metric_id == metric_id)[0].score
+    return file_metric[metric_id].score
   catch
     return null
 

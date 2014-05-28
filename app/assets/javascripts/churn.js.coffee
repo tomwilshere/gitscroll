@@ -1,5 +1,7 @@
+return if window.commits == undefined
 width = $("#chart-churn").width()
 height = $("#chart-churn").height()
+churnStepLength = 15000/commits.length
 
 svgContainer = d3.select("#chart-churn")
 		.append("svg")
@@ -43,6 +45,7 @@ updateChurnChart = () ->
 			.attr("r", 5)
 
 	churnCircles.transition()
+			.duration(churnStepLength*5)
 			.style("fill", (d) -> color(pathToCommitFile[d]))
 			.attr("cx", (d) -> churnScale(pathCount[d]))
 			.attr("cy", (d) -> complexityScale(getMetricScore(file_metrics[pathToCommitFile[d].id], current_metric_id)))
@@ -59,7 +62,7 @@ animation_timer = $.timer(->
 	animation_timer.stop() if commit_number == commits.length - 1
 	return)
 window.startChurnAnimation = () ->
-	animation_timer.set({time: 15000/commits.length, autostart: true})
+	animation_timer.set({time: churnStepLength, autostart: true})
 
 pauseChurnAnimation = () ->
 	animation_timer.pause()

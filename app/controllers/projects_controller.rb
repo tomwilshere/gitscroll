@@ -94,6 +94,7 @@ class ProjectsController < ApplicationController
     @commitFiles = @commitFiles.group_by{|cf| cf.commit_id }
     @jsonCommitFiles = @commitFiles.to_json
     @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}
+    @fileMetrics.map{|k,v| @fileMetrics[k] = Hash[*v.map{|fm| [fm.metric_id, fm]}.flatten]}
     @jsonFileMetrics = @fileMetrics.to_json
     @jsonMetricStats = MetricStats.all.group_by{|ms| ms.project_id}.to_json
     @authors = Hash[@project.authors.uniq.map{|a| [a.id, {name: a.name, email: a.email, email_md5: Digest::MD5.hexdigest(a.email.strip.downcase)}]}]
