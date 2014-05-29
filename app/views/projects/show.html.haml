@@ -62,6 +62,11 @@
         %h2 3 Files to Fix
         %p These are your worst files across all metrics at the moment
         #five-fixes.row.file-row
+        = form_for(FalsePositive.new, remote: true) do |f|
+          = f.hidden_field :project_id
+          = f.hidden_field :path
+          = f.hidden_field :comment
+          = f.hidden_field :type
     .row
       .col-md-12
         %h2 3 Files to Watch
@@ -131,12 +136,12 @@
     {{commit_date}}
 
 %script#fix-file-template{:type => "x-tmpl-mustache"}
-  %a{:href => "{{path}}"}
+  %a{:href => "{{url_path}}"}
     %span.glyphicon.glyphicon-file{:style=> "color: {{color}}"}
     %h4 {{filename}} ({{score}})
   %p
     %span.glyphicon.glyphicon-ok-sign.tick-cross.ok-file
-    %span.glyphicon.glyphicon-remove-sign.tick-cross.remove-file
+    %span.glyphicon.glyphicon-remove-sign.tick-cross.remove-file{:data => {"path" => "{{path}}", "type" => "{{type}}"}}
 
 %script
   = "var path = \"#{@path}\";".html_safe
@@ -161,5 +166,7 @@
   = @authors.to_json.html_safe
   var filesToFix =
   = @filesToFix.to_json.html_safe
+  var falsePositives =
+  = @falsePositives.to_json.html_safe
 %script
   analytics.page('Projects', "View project", {id: project.id})

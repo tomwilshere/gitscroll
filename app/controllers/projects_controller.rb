@@ -88,6 +88,7 @@ class ProjectsController < ApplicationController
 
     @filesToFix = @project.calculateFilesToFix(6)
 
+    @falsePositives = @project.false_positives
     @jsonCommits = @commits.to_json
     @commitFilesByPath = @commitFiles.group_by{|cf| cf.path}
     @jsonCommitFilesByPath = @commitFilesByPath.to_json

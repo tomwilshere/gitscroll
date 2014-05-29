@@ -1,4 +1,6 @@
 Gitscroll::Application.routes.draw do
+  resources :false_positives
+
   resources :metrics
 
   resources :projects

@@ -4,6 +4,7 @@ class Project < ActiveRecord::Base
   has_many :file_metrics, through: :commits
   has_many :metric_stats, dependent: :destroy
   has_many :authors, through: :commits
+  has_many :false_positives, dependent: :destroy
   after_initialize :generate_hash
 
   # Have the model assign itself a unique hash folder if
@@ -44,7 +45,7 @@ class Project < ActiveRecord::Base
     commit_files = self.commit_files.group_by{|cf| cf.path}.values
     Metric.all.each do |metric|
       res[metric.id] = commit_files
-        .map{|cfs| {commit_file: cfs.last.id, score: cfs.last.file_metrics.where(:metric_id => metric.id)[0]? cfs.last.file_metrics.where(:metric_id => metric.id)[0].score : -1 }}
+        .map{|cfs| {commit_file: cfs.last.id, score: cfs.last.file_metrics.where(:metric_id => metric.id)[0]? cfs.last.file_metrics.where(:metric_id => metric.id)[0].score : -1}}
         .group_by{|cf| cf[:score]}.to_a
         .sort_by{|cf| cf[0]}.reverse
       res[metric.id].each_with_index do |files, index|
@@ -56,7 +57,7 @@ class Project < ActiveRecord::Base
 
     return fileHash.to_a.
             sort_by{|f| f[1]}
-            .map{|f| {commit: CommitFile.find(f[0]).commit_id, commit_file_id: f[0]}}
+            .map{|f| {commit: CommitFile.find(f[0]).commit_id, commit_file_id: f[0], path: CommitFile.find(f[0]).path}}
             .take(numFiles)
   end
 
