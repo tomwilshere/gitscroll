@@ -161,3 +161,5 @@
   = @authors.to_json.html_safe
   var filesToFix =
   = @filesToFix.to_json.html_safe
+%script
+  analytics.page('Projects', "View project", {id: project.id})

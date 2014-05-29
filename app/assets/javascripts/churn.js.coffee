@@ -112,8 +112,27 @@ processCommitChurn = () ->
 		pathToCommitFile[commit_file.path] = commit_file
 	updateChurnChart()
 
-$('#churn-play').click(startChurnAnimation)
-$('#churn-pause').click(pauseChurnAnimation)
-$('#churn-stop').click(stopChurnAnimation)
+$('#churn-play').click(() ->
+	startChurnAnimation()
+	analytics.track('play animation', {
+		commit_number  : commit_number,
+		num_commits : commits.length
+	});
+)
+
+$('#churn-pause').click(() ->
+	pauseChurnAnimation()
+	analytics.track('pause animation', {
+		commit_number  : commit_number,
+		num_commits : commits.length
+	});
+)
+$('#churn-stop').click(() ->
+	stopChurnAnimation()
+	analytics.track('stop animation', {
+		commit_number  : commit_number,
+		num_commits : commits.length
+	});
+)
 
 

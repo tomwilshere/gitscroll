@@ -58,6 +58,9 @@ metric_selector.on("change", () ->
   updateWatchFiles()
   stopChurnAnimation()
   startChurnAnimation()
+  analytics.track('Changed metric dropdown', {
+    metric  : current_metric_id
+  });
 )
 
 project_selector.on("change", () ->
@@ -70,4 +73,7 @@ project_selector.on("change", () ->
     files.transition().style("fill", (d) -> color(d))
   updateFixFiles()
   updateWatchFiles()
+  analytics.track('Changed project dropdown', {
+    metric  : current_compare_project_id
+  });
 )

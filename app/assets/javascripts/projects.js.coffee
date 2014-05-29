@@ -18,6 +18,9 @@ redraw = () ->
 dragstart = (d) ->
     d3.select(this).classed("fixed", d.fixed = true)
     d3.event.sourceEvent.stopPropagation()
+    analytics.track('node drag', {
+      path: d.path
+    });
     return
 
 # right click event handler for unfixing nodes

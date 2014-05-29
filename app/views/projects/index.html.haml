@@ -23,3 +23,5 @@
             %ul.dropdown-menu
               %li= link_to 'Edit', edit_project_path(project)
               %li= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' }
+%script
+  analytics.page('Projects', "Index projects")

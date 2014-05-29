@@ -163,10 +163,17 @@ refreshLifelineData()
 deletions.attr("y", (d) -> file_scale(d.deleted_file))
 		.attr("height", $("#chart-lifeline").height() / Object.size(file_ordering))
 
-$('#gradient-points').on("change mousemove", () ->
+$('#gradient-points').on("change", () ->
 	updateGradientCircles()
 	$('#gradient-points-count').html($(this).val())
+	analytics.track('gradient circles updated', {
+		numGradientPoints  : $(this).val()
+	});
 )
+
+$('#gradient-points').on("mousemove", () ->
+	updateGradientCircles()
+	$('#gradient-points-count').html($(this).val()))
 
 refreshData = () ->
 	if commits.length < project.num_commits
