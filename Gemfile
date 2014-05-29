@@ -7,6 +7,7 @@ gem 'rails', '4'
 
 group :development do
 	gem 'pg'
+	gem 'meta_request'
 end
 
 group :test do
@@ -84,6 +85,8 @@ gem 'guard-livereload'
 gem 'google-analytics-rails'
 
 gem 'analytics-ruby', '~>1.0'
+
+gem 'newrelic_rpm'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
