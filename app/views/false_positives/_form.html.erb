@@ -1,0 +1,33 @@
+<%= form_for(@false_positive) do |f| %>
+  <% if @false_positive.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@false_positive.errors.count, "error") %> prohibited this false_positive from being saved:</h2>
+
+      <ul>
+      <% @false_positive.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :path %><br>
+    <%= f.text_field :path %>
+  </div>
+  <div class="field">
+    <%= f.label :project %><br>
+    <%= f.text_field :project %>
+  </div>
+  <div class="field">
+    <%= f.label :comment %><br>
+    <%= f.text_area :comment %>
+  </div>
+  <div class="field">
+    <%= f.label :type %><br>
+    <%= f.text_field :type %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

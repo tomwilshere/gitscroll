@@ -61,7 +61,7 @@ module ProjectsHelper
             commit.commit_number = count
             commit.save
             # Resque.enqueue(CommitMetricUpdater, commit.id)
-            update_commit_metrics(repo, rugged_commit)
+            update_commit_metrics(repo, rugged_commit, commit)
             commit.deleted_files = (ProjectsHelper.get_previous_files - ProjectsHelper.get_current_files).join ","
             ProjectsHelper.set_previous_files(ProjectsHelper.get_current_files)
             ProjectsHelper.set_current_files([])
@@ -72,30 +72,32 @@ module ProjectsHelper
     	end
 
         store_min_and_max_metrics(project)
+        project.calculateFilesToFix()
     end
 
-    def update_commit_metrics(repo, commit)
-    	update_commit_tree(repo, commit, repo.lookup(commit.tree.oid), "")
+    def update_commit_metrics(repo, rugged_commit, commit)
+    	update_commit_tree(repo, rugged_commit, commit, repo.lookup(rugged_commit.tree.oid), "")
     end
 
-    def update_commit_tree(repo, commit, tree, path)
+    def update_commit_tree(repo, rugged_commit, commit, tree, path)
     	tree.each_tree do |subtree|
-    		update_commit_tree(repo, commit, repo.lookup(subtree[:oid]), path + subtree[:name] + "/" )
+    		update_commit_tree(repo, rugged_commit, commit, repo.lookup(subtree[:oid]), path + subtree[:name] + "/" )
     	end
     	tree.each_blob do |blob|
-    		update_commit_file(repo, commit, blob, path)
+    		update_commit_file(repo, rugged_commit, commit, blob, path)
     	end
     end
 
-    def update_commit_file(repo, commit, blob, path)
+    def update_commit_file(repo, rugged_commit, commit, blob, path)
     	blob_object = repo.lookup(blob[:oid])
-        if !blob_object.binary? 
+        if !blob_object.binary?
             ProjectsHelper.get_current_files.push(path + blob[:name])
             if !ProjectsHelper.get_visited_blobs[blob[:oid]]
                 ProjectsHelper.get_visited_blobs[blob[:oid]] = true
                 commitFile = CommitFile.find_or_create_by_git_hash(blob[:oid])
-                commitFile.commit_id = commit.oid
+                commitFile.commit_id = rugged_commit.oid
                 commitFile.path = path  + blob[:name]
+                commitFile.project_id = commit.project_id
                 commitFile.save
     	    	generate_file_metrics(commitFile, blob_object.content)
             end
@@ -110,7 +112,8 @@ module ProjectsHelper
 	    		metric = Metric.find_by_name(metric_name.to_s)
 	    		file_metric_info = {:commit_file => commitFile,
 	    							:score => score,
-	    							:metric_id => metric.id}
+	    							:metric_id => metric.id,
+                                    :project_id => commitFile.project_id}
 
 	    		FileMetric.create(file_metric_info)
 	    	end
@@ -122,7 +125,7 @@ module ProjectsHelper
         file_metrics = project.file_metrics.group_by{|fm| fm.metric_id }
         Metric.all.each do |metric|
             metrics = file_metrics[metric.id]
-            if metrics 
+            if metrics
                 min = metrics.map{|fm| fm.score}.min
                 max = metrics.map{|fm| fm.score}.max
             end
@@ -131,6 +134,9 @@ module ProjectsHelper
     end
 
     def makeD3Network(commit, tree, currentPath, commitNumber)
+        commit_files = commit.project.commit_files
+        commit_file_ids = Hash[*commit_files.map{|cf| [cf.id, cf]}.flatten]
+        file_metrics = commit.project.file_metrics.group_by{|fm| fm.commit_file_id }
         dataset = Hash.new
         dataset[:hash] = commit[:git_hash]
         dataset[:date] = commit[:date]
@@ -145,15 +151,14 @@ module ProjectsHelper
             nodeSize = (entry[:type] == :blob) ? 4 : 6
             metrics = Hash.new
             path = ""
-            if CommitFile.exists?(entry[:oid])
-                cf = CommitFile.find(entry[:oid])
+            if commit_file_ids.include?(entry[:oid])
+                cf = commit_file_ids[entry[:oid]]
                 path = cf.path
-                cf.file_metrics.each do |metric|
+                file_metrics[cf.id].each do |metric|
                     metrics[metric.metric_id] = metric.score
                 end
             end
-            # score = (entry[:type] == :blob && CommitFile.exists?(entry[:oid])) ? CommitFile.find(entry[:oid]).file_metrics.where(:metric_id => 1).first.score : nil
-            id = entry[:oid] #+ ((entry[:type] == :blob) ? SecureRandom.uuid : "")
+            id = entry[:oid]
             nodes.push(Hash[:id => id, :name => entry[:name], :path => path, :size => nodeSize, :metrics => metrics])
             dataset[:edges].push(Hash[:source => parentOID, :target => id])
         end
@@ -165,7 +170,7 @@ module ProjectsHelper
         # repo = Rugged::Repository.new(project.repo_local_url)
         # walker = Rugged::Walker.new(repo)
         # walker.push(repo.head.target)
-        
+
         commits = project.commits.each_with_index.map {|commit,i| {:hash => commit[:git_hash], :commit_number => i, :commit_files => createCommitFileObjects(commit.commit_files)}}
 
 

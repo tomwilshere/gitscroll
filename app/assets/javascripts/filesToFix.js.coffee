@@ -3,7 +3,7 @@ fixes = d3.select("#five-fixes")
 
 updateFileContent = (d, type) ->
 	template = $('#fix-file-template').html()
-	commit_file = commit_files[d.commit].filter((cf) -> cf.id == d.commit_file_id)[0]
+	commit_file = commit_files[d.commit_id].filter((cf) -> cf.id == d.commit_file_id)[0]
 	view = {
 		filename: commit_file.path.split("/").splice(-1)[0]
 		path: commit_file.path
@@ -41,7 +41,7 @@ window.updateWatchFiles = () ->
 	)
 	false_positive_paths = falsePositives.filter((fp) -> fp.type == "watch").map((fp) -> fp.path)
 	gradientPoints = gradientPoints.filter((file) -> !(file.path in false_positive_paths))
-	filesToWatch = gradientPoints.map((gp) -> {commit: gp.commit_id, commit_file_id: commit_files[gp.commit_id].filter((cf) -> cf.path == gp.path)[0].id})
+	filesToWatch = gradientPoints.map((gp) -> {commit_id: gp.commit_id, commit_file_id: commit_files[gp.commit_id].filter((cf) -> cf.path == gp.path)[0].id})
 
 	watches.selectAll(".col-md-4").remove()
 	watchFiles = watches.selectAll(".col-md-4")

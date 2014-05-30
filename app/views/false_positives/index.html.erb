@@ -1,0 +1,33 @@
+<h1>Listing false_positives</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Path</th>
+      <th>Project</th>
+      <th>Comment</th>
+      <th>Type</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @false_positives.each do |false_positive| %>
+      <tr>
+        <td><%= false_positive.path %></td>
+        <td><%= false_positive.project %></td>
+        <td><%= false_positive.comment %></td>
+        <td><%= false_positive.type %></td>
+        <td><%= link_to 'Show', false_positive %></td>
+        <td><%= link_to 'Edit', edit_false_positive_path(false_positive) %></td>
+        <td><%= link_to 'Destroy', false_positive, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New False positive', new_false_positive_path %>

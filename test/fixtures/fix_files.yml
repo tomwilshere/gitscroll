@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  project_id: 
+  commit_id: MyString
+  commit_file_id: MyString
+  path: MyString
+
+two:
+  project_id: 
+  commit_id: MyString
+  commit_file_id: MyString
+  path: MyString

@@ -32,8 +32,16 @@ class ProjectsController < ApplicationController
       @parent_path = generate_parent_path(@path)
     end
 
-    @commits = @project.commits.sort_by{|c| c.date}
-    @commitFiles = @project.commit_files.sort_by { |cf| cf.commit.date }
+    puts "sort commits " + Time.now.to_f.to_s
+    @commits = @project.commits.order(:date)
+    # if @commits.size >= 1000
+    #   @commits = @commits[@commits.size - 1000, @commits.size]
+    # end
+    puts "group commits " + Time.now.to_f.to_s
+    @commitHash = @commits.group_by{|c| c.git_hash }
+    puts "sort commitFiles " + Time.now.to_f.to_s
+    @commitFiles = @project.commit_files.sort_by { |cf| @commitHash[cf.commit_id][0].date }
+    puts "fetch fileMetrics " + Time.now.to_f.to_s
     @fileMetrics = @project.file_metrics
 
     if @object.type == :blob
@@ -82,11 +90,13 @@ class ProjectsController < ApplicationController
 
     @d3Network = nil
 
+    puts "generate d3Network " + Time.now.to_f.to_s
     if @object.type == :tree && @commits.size > 0 && request.format != "json"
       @d3Network = makeD3Network(@commits.first, @object, @path, @commits.size).to_json
     end
 
-    @filesToFix = @project.calculateFilesToFix(6)
+    puts "fetch filesToFix " + Time.now.to_f.to_s
+    @filesToFix = @project.fix_files.sort_by{|f| f.score}
 
     @falsePositives = @project.false_positives
     @jsonCommits = @commits.to_json

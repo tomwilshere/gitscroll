@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Path:</strong>
+  <%= @false_positive.path %>
+</p>
+
+<p>
+  <strong>Project:</strong>
+  <%= @false_positive.project %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @false_positive.comment %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @false_positive.type %>
+</p>
+
+<%= link_to 'Edit', edit_false_positive_path(@false_positive) %> |
+<%= link_to 'Back', false_positives_path %>
