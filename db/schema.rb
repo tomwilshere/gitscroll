@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140529092339) do
+ActiveRecord::Schema.define(version: 20140529214310) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,10 +29,12 @@ ActiveRecord::Schema.define(version: 20140529092339) do
     t.string   "path"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "project_id"
   end
 
   add_index "commit_files", ["commit_id"], name: "index_commit_files_on_commit_id", using: :btree
   add_index "commit_files", ["git_hash"], name: "index_commit_files_on_git_hash", using: :btree
+  add_index "commit_files", ["project_id"], name: "index_commit_files_on_project_id", using: :btree
 
   create_table "commits", force: true do |t|
     t.integer  "project_id"
@@ -67,10 +69,24 @@ ActiveRecord::Schema.define(version: 20140529092339) do
     t.float    "score"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "project_id"
   end
 
   add_index "file_metrics", ["commit_file_id"], name: "index_file_metrics_on_commit_file_id", using: :btree
   add_index "file_metrics", ["metric_id"], name: "index_file_metrics_on_metric_id", using: :btree
+  add_index "file_metrics", ["project_id"], name: "index_file_metrics_on_project_id", using: :btree
+
+  create_table "fix_files", force: true do |t|
+    t.integer  "project_id"
+    t.string   "commit_id"
+    t.string   "commit_file_id"
+    t.string   "path"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "score"
+  end
+
+  add_index "fix_files", ["project_id"], name: "index_fix_files_on_project_id", using: :btree
 
   create_table "metric_stats", force: true do |t|
     t.integer  "project_id"
