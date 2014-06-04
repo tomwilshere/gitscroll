@@ -32,5 +32,5 @@
 				=file_commit[:file_contents].encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
 :javascript
 	window.currentHash = "#{@initial_commit_hash}"
-	var hash_array = #{raw @fileCommits.keys.reverse.to_json}
+	var hash_array = #{raw @fileCommits.keys.to_json}
 	var file_versions = #{raw @fileCommits.to_a.to_json}
