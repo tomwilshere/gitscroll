@@ -23,15 +23,15 @@ Gitscroll::Application.configure do
   config.serve_static_assets = false
 
   # Compress JavaScripts and CSS.
-  # config.assets.js_compressor = :uglifier
-  # config.assets.css_compressor = :sass
+  config.assets.js_compressor = NoCompression.new #:uglifier
+  config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
 
   # Dont' compress production assets (For debugging)
-  config.assets.debug = true
-  config.assets.compress = false
+  # config.assets.debug = true
+  # config.assets.compress = false
 
   # Generate digests for assets URLs.
   config.assets.digest = true
