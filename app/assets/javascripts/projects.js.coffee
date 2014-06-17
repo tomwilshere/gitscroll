@@ -90,8 +90,6 @@ window.nodes = vis.selectAll("circle")
            .style("fill", (d) -> color(d))
            .on("contextmenu", rightclick)
            .call(force.drag)
-           .on("click", (d) -> 
-              document.location.href = "/projects/" + commits[0].project_id + "/" + d.path )
 
 nodes.append("title")
      .text((d) -> (if d.path then d.path else d.name) + " " + (if d.metrics && d.metrics[current_metric_id] then d.metrics[current_metric_id] else ""))
