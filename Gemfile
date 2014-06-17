@@ -88,6 +88,9 @@ gem 'analytics-ruby', '~>1.0'
 
 gem 'newrelic_rpm'
 
+# erd
+gem 'rails-erd'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
