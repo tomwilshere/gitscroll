@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140529214310) do
+ActiveRecord::Schema.define(version: 20140617161454) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 20140529214310) do
   end
 
   add_index "commit_files", ["commit_id"], name: "index_commit_files_on_commit_id", using: :btree
+  add_index "commit_files", ["git_hash", "project_id"], name: "index_commit_files_on_git_hash_and_project_id", unique: true, using: :btree
   add_index "commit_files", ["git_hash"], name: "index_commit_files_on_git_hash", using: :btree
   add_index "commit_files", ["project_id"], name: "index_commit_files_on_project_id", using: :btree
 
@@ -49,6 +50,7 @@ ActiveRecord::Schema.define(version: 20140529214310) do
   end
 
   add_index "commits", ["author_id"], name: "index_commits_on_author_id", using: :btree
+  add_index "commits", ["git_hash", "project_id"], name: "index_commits_on_git_hash_and_project_id", unique: true, using: :btree
   add_index "commits", ["git_hash"], name: "index_commits_on_git_hash", using: :btree
   add_index "commits", ["project_id"], name: "index_commits_on_project_id", using: :btree
 

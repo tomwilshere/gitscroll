@@ -4,15 +4,16 @@ fixes = d3.select("#five-fixes")
 updateFileContent = (d, type) ->
 	template = $('#fix-file-template').html()
 	commit_file = commit_files[d.commit_id].filter((cf) -> cf.id == d.commit_file_id)[0]
-	view = {
-		filename: commit_file.path.split("/").splice(-1)[0]
-		path: commit_file.path
-		url_path: "/projects/" + project.id + "/" + commit_file.path
-		score: getMetricScore(file_metrics[commit_file.id], current_metric_id)
-		color: color(commit_file)
-		type: type
-	}
-	Mustache.render(template, view)
+	if commit_file
+		view = {
+			filename: commit_file.path.split("/").splice(-1)[0]
+			path: commit_file.path
+			url_path: "/projects/" + project.id + "/" + commit_file.path
+			score: getMetricScore(file_metrics[commit_file.id], current_metric_id)
+			color: color(commit_file)
+			type: type
+		}
+		Mustache.render(template, view)
 
 updateFixFileContent = (d) ->
 	updateFileContent(d, "fix")

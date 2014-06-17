@@ -50,7 +50,8 @@ module ProjectsHelper
         end
         rugged_commits = rugged_commits.reverse
         rugged_commits.each do |rugged_commit|
-    		commit = Commit.find_or_create_by_git_hash(rugged_commit.oid)
+    		commit = Commit.new
+            commit.git_hash = rugged_commit.oid
     		commit.project = project
     		commit.git_hash = rugged_commit.oid
     		commit.message = rugged_commit.message
@@ -94,7 +95,8 @@ module ProjectsHelper
             ProjectsHelper.get_current_files.push(path + blob[:name])
             if !ProjectsHelper.get_visited_blobs[blob[:oid]]
                 ProjectsHelper.get_visited_blobs[blob[:oid]] = true
-                commitFile = CommitFile.find_or_create_by_git_hash(blob[:oid])
+                commitFile = CommitFile.new
+                commitFile.git_hash = blob[:oid]
                 commitFile.commit_id = rugged_commit.oid
                 commitFile.path = path  + blob[:name]
                 commitFile.project_id = commit.project_id
@@ -109,6 +111,7 @@ module ProjectsHelper
     	all_metrics = generate_metrics(fileContents, commitFile.path.split("/").last)
     	all_metrics.each do |metric_name, score|
     		if score != nil
+                puts commitFile.project_id
 	    		metric = Metric.find_by_name(metric_name.to_s)
 	    		file_metric_info = {:commit_file => commitFile,
 	    							:score => score,
@@ -154,8 +157,10 @@ module ProjectsHelper
             if commit_file_ids.include?(entry[:oid])
                 cf = commit_file_ids[entry[:oid]]
                 path = cf.path
-                file_metrics[cf.id].each do |metric|
-                    metrics[metric.metric_id] = metric.score
+                if file_metrics[cf.id]
+                    file_metrics[cf.id].each do |metric|
+                        metrics[metric.metric_id] = metric.score
+                    end
                 end
             end
             id = entry[:oid]
