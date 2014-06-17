@@ -111,7 +111,6 @@ module ProjectsHelper
     	all_metrics = generate_metrics(fileContents, commitFile.path.split("/").last)
     	all_metrics.each do |metric_name, score|
     		if score != nil
-                puts commitFile.project_id
 	    		metric = Metric.find_by_name(metric_name.to_s)
 	    		file_metric_info = {:commit_file => commitFile,
 	    							:score => score,
