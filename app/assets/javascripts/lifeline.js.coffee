@@ -92,7 +92,7 @@ window.refreshLifelineData = () ->
 
 	window.commit_scale = d3.scale.linear()
 			.domain([0, commits.length])
-			.range([0, $("#chart-lifeline").width()])
+			.range([5, $("#chart-lifeline").width()])
 
 	window.commit_groups = svg.selectAll("g")
 			.data(commits, (d) -> d.id)
@@ -171,6 +171,11 @@ window.refreshLifelineData = () ->
 	deletions.attr("height", $("#chart-lifeline").height() / Object.size(file_ordering))
 
 	updateGradientCircles()
+
+	axis = d3.svg.axis().scale(commit_scale)
+	svgContainer.selectAll("g.axis")
+			.transition()
+			.call(axis)
 
 refreshLifelineData()
 
