@@ -166,7 +166,23 @@
   margin-left: -50px;
 }
 
+#chart-lifeline svg {
+  margin-left: -50px;
+}
+
 #animation-controls {
   margin-left: 50px;
   margin-top: -50px;
+}
+
+.chart-y-label{
+  transform: rotate(-90deg);
+  -ms-transform:rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  position: relative;
+  top: -178px;
+  left: -170px;
+  height: 0px;
+  width: 350px;
+  text-align: center
 }

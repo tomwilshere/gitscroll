@@ -30,15 +30,16 @@ tip = d3.tip()
 width = $("#chart-lifeline").width()
 height = $("#chart-lifeline").height()
 axisHeight = 30
+axisWidth = 50
 
 svgContainer = d3.select("#chart-lifeline")
 		.append("svg")
-		.attr("width", width)
+		.attr("width", width + axisWidth)
 		.attr("height", height + axisHeight)
 
 window.commit_scale = d3.scale.linear()
 		.domain([0, commits.length])
-		.range([5, $("#chart-lifeline").width()])
+		.range([axisWidth, $("#chart-lifeline").width()])
 
 
 axis = d3.svg.axis().scale(commit_scale)
@@ -79,7 +80,7 @@ window.updateGradientCircles = () ->
 window.file_ordering = {}
 
 window.refreshLifelineData = () ->
-	svgContainer.attr("width", $('#chart-lifeline').width())
+	svgContainer.attr("width", $('#chart-lifeline').width() + axisWidth)
 		.attr("height", $('#chart-lifeline').height() + axisHeight)
 
 	window.file_scale = (path) ->
@@ -92,7 +93,7 @@ window.refreshLifelineData = () ->
 
 	window.commit_scale = d3.scale.linear()
 			.domain([0, commits.length])
-			.range([5, $("#chart-lifeline").width()])
+			.range([axisWidth, $("#chart-lifeline").width()])
 
 	window.commit_groups = svg.selectAll("g")
 			.data(commits, (d) -> d.id)
