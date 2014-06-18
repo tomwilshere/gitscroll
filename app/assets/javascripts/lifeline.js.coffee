@@ -7,9 +7,14 @@ if commits.length < project.num_commits
 $(window).resize ->
 	refreshLifelineData()
 
+width = $("#chart-lifeline").width()
+height = $("#chart-lifeline").height()
+axisHeight = 30
+axisWidth = 50
+
 tip = d3.tip()
 		.attr('class', 'd3-tip')
-		.offset([-10,0-$("#chart-lifeline").width()/2])
+		.offset([-10,0-($("#chart-lifeline").width()+axisWidth)/2])
 		.html((d) ->
 			template = $('#tip-template').html()
 			commit = d3.select(this.parentNode).datum()
@@ -25,12 +30,6 @@ tip = d3.tip()
 			}
 			Mustache.render(template, view)
 		)
-
-
-width = $("#chart-lifeline").width()
-height = $("#chart-lifeline").height()
-axisHeight = 30
-axisWidth = 50
 
 svgContainer = d3.select("#chart-lifeline")
 		.append("svg")
@@ -125,7 +124,7 @@ window.refreshLifelineData = () ->
 			.attr("y", (d, i) -> file_scale(d.path))
 			.on('mouseover', tip.show)
 			.on('mouseout', tip.hide)
-			# .on("click", (d) -> document.location.href = "/projects/" + d3.select(this.parentNode).datum().project_id + "/" + d.path )
+			.on("click", (d) -> document.location.href = "/projects/" + project.id + "/" + d.path + "#" + d3.select(this.parentNode).datum().id )
 
 	files.transition()
 			.attr("x", (d) ->

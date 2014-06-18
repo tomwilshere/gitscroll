@@ -22,6 +22,8 @@ maxChurn = currentMaxChurn()
 
 tip = d3.tip()
 		.attr('class', 'd3-tip')
+		.offset([-10,0])
+		# .on("click", (d) ->	document.location.href = "/projects/" + project.id + "/" + d.path + "#" + d.commit.id )
 		.html((d) ->
 			template = $('#tip-template').html()
 			commit = d.commit
@@ -37,7 +39,6 @@ tip = d3.tip()
 			}
 			Mustache.render(template, view)
 		)
-
 svgContainer.call(tip)
 
 svgXaxis = svgContainer.append("g")
@@ -81,6 +82,7 @@ updateChurnChart = () ->
 			.attr("r", 5)
 			.on('mouseover', tip.show)
 			.on('mouseout', tip.hide)
+			.on("click", (d) ->	document.location.href = "/projects/" + project.id + "/" + d.path + "#" + d.commit.id )
 
 	churnCircles.transition()
 			.duration(churnStepLength*5)

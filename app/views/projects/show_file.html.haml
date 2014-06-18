@@ -9,7 +9,7 @@
 		Next commit
 
 
-- @fileCommits.each do |hash, file_commit|
+- @fileCommits.to_a.reverse.each do |hash, file_commit|
 	-#hide all but current commit
 	- hidden_state = hash != @initial_commit_hash ? 'hidden' : ''
 	%div{:class => hidden_state, :id => hash}
@@ -33,4 +33,4 @@
 :javascript
 	window.currentHash = "#{@initial_commit_hash}"
 	var hash_array = #{raw @fileCommits.keys.to_json}
-	var file_versions = #{raw @fileCommits.to_a.to_json}
+	var file_versions = #{raw @fileCommits.to_a.reverse.to_json}

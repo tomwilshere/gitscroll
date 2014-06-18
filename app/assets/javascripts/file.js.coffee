@@ -52,7 +52,7 @@ highlightLines = ->
 				for line in [group[2]+1..group[4]]
 					$(lineArray[line-1]).addClass("addition")
 			else if group[0] == "replace"
-				for line in [group[2]..group[4]]				
+				for line in [group[2]..group[4]]
 					$(lineArray[line-1]).addClass("change")
 			else if group[0] == "delete"
 				$(lineArray[group[4]]).addClass("deletion")
@@ -90,3 +90,8 @@ changeCommit = (next) ->
 	nextHash = hash_array[nextIndex]
 	if nextHash != undefined
 		jumpTo(nextHash)
+
+if window.location.hash
+	jumpTo(window.location.hash.substring(1))
+else
+	jumpTo(hash_array[hash_array.length - 1])
