@@ -133,3 +133,26 @@
 #gradient-points {
 	width: 100%;
 }
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.axis line {
+  stroke: #fff;
+}
+
+.axis path {
+  fill: none;
+  stroke: none;
+}
+
+.axis .tick text {
+  fill: #fff;
+  stroke: none;
+}
+
+.chart-x-label {
+  text-align: center;
+  margin-top: 30px;
+}

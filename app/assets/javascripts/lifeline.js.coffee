@@ -29,13 +29,27 @@ tip = d3.tip()
 
 width = $("#chart-lifeline").width()
 height = $("#chart-lifeline").height()
+axisHeight = 30
 
 svgContainer = d3.select("#chart-lifeline")
 		.append("svg")
 		.attr("width", width)
-		.attr("height", height)
+		.attr("height", height + axisHeight)
+
+window.commit_scale = d3.scale.linear()
+		.domain([0, commits.length])
+		.range([5, $("#chart-lifeline").width()])
+
+
+axis = d3.svg.axis().scale(commit_scale)
+
+svgContainer.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(axis)
 
 svg = svgContainer.append('svg:g')
+
 
 svg.call(tip)
 
@@ -66,7 +80,7 @@ window.file_ordering = {}
 
 window.refreshLifelineData = () ->
 	svgContainer.attr("width", $('#chart-lifeline').width())
-		.attr("height", $('#chart-lifeline').height())
+		.attr("height", $('#chart-lifeline').height() + axisHeight)
 
 	window.file_scale = (path) ->
 		if file_ordering[path] == undefined
