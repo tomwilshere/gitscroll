@@ -198,6 +198,7 @@ $('#gradient-points').on("mousemove", () ->
 refreshData = () ->
 	if commits.length < project.num_commits
 		$.getJSON("/projects/" + project.id + ".json", updateLifeline)
+				.error(refreshData)
 	else
 		$('#progress-bar').hide()
 
