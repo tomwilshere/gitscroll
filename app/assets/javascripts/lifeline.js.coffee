@@ -2,7 +2,7 @@ return if window.commits == undefined
 
 if commits.length < project.num_commits
 	$('#progress').removeClass("hidden")
-	d3.select('#progress-bar').transition().style("width", (commits.length / project.num_commits) * 100 + "%")
+	d3.select('#progress-bar').style("width", (commits.length / project.num_commits) * 100 + "%")
 
 $(window).resize ->
 	refreshLifelineData()
@@ -210,7 +210,7 @@ updateLifeline = (data) ->
 	refreshLifelineData()
 	if window.nodes != undefined
 		nodes.attr("fill", (d) -> color(d))
-	d3.select('#progress-bar').transition().style("width", (commits.length / project.num_commits) * 100 + "%")
+	d3.select('#progress-bar').style("width", (commits.length / project.num_commits) * 100 + "%")
 	refreshData()
 
 refreshData()
