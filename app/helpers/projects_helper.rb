@@ -107,7 +107,6 @@ module ProjectsHelper
     end
 
     def generate_file_metrics(commitFile, fileContents)
-    	commitFile.file_metrics.destroy_all
     	all_metrics = generate_metrics(fileContents, commitFile.path.split("/").last)
     	all_metrics.each do |metric_name, score|
     		if score != nil
