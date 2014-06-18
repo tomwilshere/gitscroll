@@ -1,12 +1,14 @@
 return if window.commits == undefined
 width = $("#chart-churn").width()
 height = $("#chart-churn").height()
+axisHeight = 30
+axisWidth = 50
 churnStepLength = 15000/commits.length
 
 svgContainer = d3.select("#chart-churn")
 		.append("svg")
-		.attr("width", width)
-		.attr("height", height)
+		.attr("width", width + axisWidth)
+		.attr("height", height + axisHeight)
 
 currentMaxChurn = () ->
 	d3.max(Object.keys(pathCount).map((path) -> pathCount[path]))
@@ -38,6 +40,14 @@ tip = d3.tip()
 
 svgContainer.call(tip)
 
+svgXaxis = svgContainer.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0," + height + ")")
+
+svgYaxis = svgContainer.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate("+ axisWidth + ",0)")
+
 updateChurnChart = () ->
 	data = Object.keys(pathToCommitFile).map((path) -> pathToCommitFile[path])
 
@@ -46,11 +56,17 @@ updateChurnChart = () ->
 
 	complexityScale = d3.scale.linear()
 			.domain([currentMin(), currentMax()])
-			.range([$("#chart-churn").height(), 0])
+			.range([$("#chart-churn").height()-7 , 7])
 
 	churnScale = d3.scale.linear()
 			.domain([0, maxChurn])
-			.range([0, $("#chart-churn").width()])
+			.range([5 + axisWidth, $("#chart-churn").width()-5])
+
+	xaxis = d3.svg.axis().scale(churnScale)
+	svgXaxis.call(xaxis)
+
+	yaxis = d3.svg.axis().scale(complexityScale).orient("left")
+	svgYaxis.call(yaxis)
 
 	churnCircles.enter()
 			.append("circle")
@@ -88,6 +104,7 @@ animation_timer = $.timer(->
 		pathCount = {}
 	return)
 window.startChurnAnimation = () ->
+	updateChurnChart()
 	animation_timer.set({time: churnStepLength, autostart: true})
 
 pauseChurnAnimation = () ->

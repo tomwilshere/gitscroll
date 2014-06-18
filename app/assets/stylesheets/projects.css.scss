@@ -136,6 +136,7 @@
 
 .axis {
   shape-rendering: crispEdges;
+  background-color: #2B3E50;
 }
 
 .axis line {
@@ -155,4 +156,17 @@
 .chart-x-label {
   text-align: center;
   margin-top: 30px;
+}
+
+.chart {
+  margin-left: 50px;
+}
+
+#chart-churn svg {
+  margin-left: -50px;
+}
+
+#animation-controls {
+  margin-left: 50px;
+  margin-top: -50px;
 }
