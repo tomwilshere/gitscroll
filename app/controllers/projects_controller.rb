@@ -49,66 +49,45 @@ class ProjectsController < ApplicationController
 
       pathCommitFiles = @project.commit_files.where(:path => @path).sort_by{ |cf| cf.commit.date}
 
+      @commitFiles = Hash[pathCommitFiles.map{|cf| [cf.commit_id, cf.id]}]
+
       @fileCommits = Hash[pathCommitFiles.map{|cf| [cf.commit_id, {:commit => cf.commit, :file_contents => @repo.lookup(cf.git_hash).content}]}]
 
-      if pathCommitFiles.size > 1
-        data_table = GoogleVisualr::DataTable.new
-        data_table.new_column('datetime', 'date')
-        # data_table.new_column('number', 'flog')
-        Metric.all.each do |metric|
-          data_table.new_column('number', metric.name)
-        end
+      @individual_file_metrics = Hash[pathCommitFiles.map{|cf| [cf.git_hash, cf.file_metrics]}]
 
-        metric_data = []
+      @metrics = Metric.all
 
-        pathCommitFiles.each do |cf|
-          commit = cf.commit
-          metrics = cf.file_metrics
-          file_metric_data = [DateTime.parse(commit.date.to_s)]
-          Metric.all.each do |metric|
-            individual_metric_data = metrics.where(:metric_id => metric.id)
-            if individual_metric_data.size > 0
-              file_metric_data.push(individual_metric_data.first.score)
-            else
-              file_metric_data.push(nil)
-            end
-          end
-          metric_data.push(file_metric_data)
-        end
-        puts "METRIC DATA: " + metric_data.to_s
-        data_table.add_rows(metric_data)
+      @jsonMetricStats = @project.metric_stats.to_json
 
-        option = { width: "100%", height: 300, title: 'Metrics' }
-        @chart = GoogleVisualr::Interactive::LineChart.new(data_table,option)
+      @initial_commit_hash = @fileCommits.keys.last
+
+    else
+      if @path != ""
+        @path += "/"
+      end
+      @d3Network = nil
+
+      puts "generate d3Network " + Time.now.to_f.to_s
+      if @object.type == :tree && @commits.size > 0 && request.format != "json"
+        @d3Network = makeD3Network(@commits.first, @object, @path, @commits.size).to_json
       end
 
-      @initial_commit_hash = @fileCommits.keys.first
+      puts "fetch filesToFix " + Time.now.to_f.to_s
+      @filesToFix = @project.fix_files.sort_by{|f| f.score}
 
-    elsif @path != ""
-      @path += "/"
+      @falsePositives = @project.false_positives
+      @jsonCommits = @commits.to_json
+      @commitFilesByPath = @commitFiles.group_by{|cf| cf.path}
+      @jsonCommitFilesByPath = @commitFilesByPath.to_json
+      @commitFiles = @commitFiles.group_by{|cf| cf.commit_id }
+      @jsonCommitFiles = @commitFiles.to_json
+      @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}
+      @fileMetrics.map{|k,v| @fileMetrics[k] = Hash[*v.map{|fm| [fm.metric_id, fm]}.flatten]}
+      @jsonFileMetrics = @fileMetrics.to_json
+      @authors = Hash[@project.authors.uniq.map{|a| [a.id, {name: a.name, email: a.email, email_md5: Digest::MD5.hexdigest(a.email.strip.downcase)}]}]
+      @jsonMetricStats = MetricStats.all.group_by{|ms| ms.project_id}.to_json
     end
 
-    @d3Network = nil
-
-    puts "generate d3Network " + Time.now.to_f.to_s
-    if @object.type == :tree && @commits.size > 0 && request.format != "json"
-      @d3Network = makeD3Network(@commits.first, @object, @path, @commits.size).to_json
-    end
-
-    puts "fetch filesToFix " + Time.now.to_f.to_s
-    @filesToFix = @project.fix_files.sort_by{|f| f.score}
-
-    @falsePositives = @project.false_positives
-    @jsonCommits = @commits.to_json
-    @commitFilesByPath = @commitFiles.group_by{|cf| cf.path}
-    @jsonCommitFilesByPath = @commitFilesByPath.to_json
-    @commitFiles = @commitFiles.group_by{|cf| cf.commit_id }
-    @jsonCommitFiles = @commitFiles.to_json
-    @fileMetrics = @fileMetrics.group_by{|fm| fm.commit_file_id}
-    @fileMetrics.map{|k,v| @fileMetrics[k] = Hash[*v.map{|fm| [fm.metric_id, fm]}.flatten]}
-    @jsonFileMetrics = @fileMetrics.to_json
-    @jsonMetricStats = MetricStats.all.group_by{|ms| ms.project_id}.to_json
-    @authors = Hash[@project.authors.uniq.map{|a| [a.id, {name: a.name, email: a.email, email_md5: Digest::MD5.hexdigest(a.email.strip.downcase)}]}]
     respond_to do |format|
       format.json { render json: {commits: @commits, commit_files: @commitFiles, file_metrics: @fileMetrics, commit_files_by_path: @commitFilesByPath, authors: @authors} }
       format.all { render view, :formats => [:html], :content_type => Mime::HTML }

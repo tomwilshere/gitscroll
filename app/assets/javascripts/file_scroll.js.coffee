@@ -63,7 +63,7 @@ back = ->
 forward = ->
 	changeCommit 1
 
-jumpTo = (nextHash) ->
+window.jumpTo = (nextHash) ->
 	nextIndex = hash_array.indexOf(nextHash)
 	currentHash = window.currentHash
 	if nextHash

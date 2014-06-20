@@ -1,7 +1,8 @@
-- if @chart != nil
-	#chart
-	= render_chart(@chart, 'chart')
-
+#file-view-chart.col-md-12.file-chart
+.chart-y-label.file-view
+	%p Metric Score
+.chart-x-label.col-md-12.file-view
+	%p Commit
 %p
 	%button.btn.btn-primary.changeButtons#back
 		Previous commit
@@ -14,7 +15,7 @@
 	- hidden_state = hash != @initial_commit_hash ? 'hidden' : ''
 	%div{:class => hidden_state, :id => hash}
 		%h3 Commit info
-		%dl.dl-horizontal
+		%dl.dl-horizontal.commit-info
 			%dt Commit
 			%dd= hash.at(0..10)
 			%dt Message
@@ -34,3 +35,7 @@
 	window.currentHash = "#{@initial_commit_hash}"
 	var hash_array = #{raw @fileCommits.keys.to_json}
 	var file_versions = #{raw @fileCommits.to_a.reverse.to_json}
+	var file_metrics = #{raw @individual_file_metrics.to_json}
+	var metrics = #{raw @metrics.to_json}
+	var commit_files = #{raw @commitFiles.to_json}
+	var metric_stats = #{raw @jsonMetricStats}

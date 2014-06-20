@@ -134,23 +134,34 @@
 	width: 100%;
 }
 
-.axis {
+.project-chart .axis {
   shape-rendering: crispEdges;
   background-color: #2B3E50;
 }
 
-.axis line {
+.project-chart .axis line {
   stroke: #fff;
 }
 
-.axis path {
+.project-chart .axis path {
   fill: none;
   stroke: none;
 }
 
-.axis .tick text {
+.project-chart .axis .tick text {
   fill: #fff;
   stroke: none;
+}
+
+.file-chart .axis path {
+  stroke-width: 2;
+  fill: none;
+  stroke: #000;
+}
+
+.file-chart .axis line {
+  stroke-width: 1px;
+  stroke: #000;
 }
 
 .chart-x-label {
@@ -185,4 +196,25 @@
   height: 0px;
   width: 350px;
   text-align: center
+}
+
+.chart-y-label.file-view {
+  color: black;
+  left: -160px;
+}
+
+.chart-x-label.file-view {
+  color: black;
+  position: relative;
+  top: -40px;
+  margin-top: 0px;
+}
+
+#file-view-chart {
+  height: 350px;
+  background-color: white;
+}
+
+.commit-info {
+  height: 85px;
 }
