@@ -1,3 +1,7 @@
+if metric_stats.length == 0
+	$("#file-view-chart").hide()
+	return
+
 width = $("#file-view-chart").width()
 height = $("#file-view-chart").height()
 axisHeight = 30
@@ -23,10 +27,10 @@ mousemoveEvent = (d, i) ->
 		jumpTo(newHash)
 	hoverLine.attr("x1", xPos)
 	hoverLine.attr("x2", xPos)
-	hoverLine.classed("hidden", false)
 
-mouseleaveEvent = (d,i) ->
-	hoverLine.classed("hidden", true)
+window.updateHoverLine = (hash) ->
+	hoverLine.attr("x1", commit_scale(hash_array.indexOf(hash)))
+	hoverLine.attr("x2", commit_scale(hash_array.indexOf(hash)))
 
 minMetric = () ->
 	Math.min.apply(null, raw_scores)
@@ -45,7 +49,6 @@ svgContainer = d3.select("#file-view-chart").append("svg")
 		.attr("width", width)
 		.attr("height", height)
 		.on("mousemove", mousemoveEvent)
-		.on("mouseleave", mouseleaveEvent)
 
 svg = svgContainer.append("g")
 
@@ -92,7 +95,7 @@ window.metricGroups = svg.selectAll("g.metric-group")
 
 metricGroups.enter()
 		.append("path")
-		.attr("d", (d) -> 
+		.attr("d", (d) ->
 			lf = lineFunction(d.id)
 			lf(hash_array))
 		.attr("stroke", (d) -> metric_color_scale(d.id))
@@ -108,7 +111,7 @@ hoverLine = svg.append("line")
 
 metric_label_scale = d3.scale.linear()
 		.domain([1,metrics.length + 1])
-		.range([leftMargin, width - rightMargin])
+		.range([leftMargin + 30, width - rightMargin - 30])
 
 for metric in metrics
 	svg.append("rect")

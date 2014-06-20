@@ -71,6 +71,8 @@ window.jumpTo = (nextHash) ->
 		$('#' + nextHash).toggleClass("hidden")
 		window.currentHash = nextHash
 	setButtonStates(nextIndex)
+	if window.updateHoverLine
+		updateHoverLine(nextHash)
 
 setButtonStates = (currentIndex) ->
 	#enable all buttons
