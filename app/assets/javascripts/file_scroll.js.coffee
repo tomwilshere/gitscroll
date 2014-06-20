@@ -97,3 +97,15 @@ if window.location.hash
 	jumpTo(window.location.hash.substring(1))
 else
 	jumpTo(hash_array[hash_array.length - 1])
+
+$("#text-smaller").click(() ->
+	newSize = parseInt($(".code-block").css("font-size")) - 1
+	console.log newSize + "px"
+	$(".code-block").css("font-size", newSize + "px")
+	console.log $(".code-block").css("font-size")
+	)
+
+$("#text-larger").click(() ->
+	newSize = parseInt($(".code-block").css("font-size")) + 1
+	$(".code-block").css("font-size", newSize + "px")
+	)

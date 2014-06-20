@@ -29,8 +29,9 @@ mousemoveEvent = (d, i) ->
 	hoverLine.attr("x2", xPos)
 
 window.updateHoverLine = (hash) ->
-	hoverLine.attr("x1", commit_scale(hash_array.indexOf(hash)))
-	hoverLine.attr("x2", commit_scale(hash_array.indexOf(hash)))
+	hoverLine
+		.attr("x1", commit_scale(hash_array.indexOf(hash)))
+		.attr("x2", commit_scale(hash_array.indexOf(hash)))
 
 minMetric = () ->
 	Math.min.apply(null, raw_scores)

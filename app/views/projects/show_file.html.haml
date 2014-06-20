@@ -27,7 +27,13 @@
 			%dt At
 			%dd= file_commit[:commit].date.to_s(:long)
 
-		%h3 File contents
+		%h3
+			File contents
+			.pull-right
+				%button.btn.btn-info.btn-xs#text-smaller
+					a
+				%button.btn.btn-info.btn-xs#text-larger
+					A
 		%pre.code-block
 			%code.prettyprint.linenums
 				=file_commit[:file_contents].encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
