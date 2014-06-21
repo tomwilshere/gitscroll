@@ -14,10 +14,6 @@ Gitscroll::Application.routes.draw do
 
   root :to => 'projects#index'
 
-  get 'file/*path', to: 'file#view'
-
-  get 'folder', to: 'folder#browse'
-
   get 'projects/:id(/*path)', to: 'projects#show'
 
 
