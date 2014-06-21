@@ -152,27 +152,27 @@
 %script
   = "var path = \"#{@path}\";".html_safe
   var commits =
-  = @jsonCommits.html_safe
+  = @commits.to_json.html_safe
   var commit_files =
-  = @jsonCommitFiles.html_safe
+  = @commit_files.to_json.html_safe
   var commit_files_by_path =
-  = @jsonCommitFilesByPath.html_safe
+  = @commit_files_by_path.to_json.html_safe
   var file_metrics =
-  = @jsonFileMetrics.html_safe
+  = @file_metrics.to_json.html_safe
   var d3Network =
-  - if @d3Network
-    = @d3Network.html_safe
+  - if @d3_network
+    = @d3_network.html_safe
   - else
     null
   var metric_stats =
-  = @jsonMetricStats.html_safe
+  = @json_metric_stats.html_safe
   var project =
   = @project.to_json.html_safe
   var authors =
   = @authors.to_json.html_safe
   var filesToFix =
-  = @filesToFix.to_json.html_safe
+  = @files_to_fix.to_json.html_safe
   var falsePositives =
-  = @falsePositives.to_json.html_safe
+  = @false_positives.to_json.html_safe
 %script
   analytics.page('Projects', "View project", {id: project.id})
