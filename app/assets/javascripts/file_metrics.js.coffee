@@ -108,7 +108,7 @@ hoverLine = svg.append("line")
 		.attr("y1", topMargin)
 		.attr("x2", commit_scale(hash_array.indexOf(currentHash)))
 		.attr("y2", height - bottomMargin)
-		.attr("stroke", "#ccc")
+		.attr("stroke", "#333")
 
 metric_label_scale = d3.scale.linear()
 		.domain([1,metrics.length + 1])
