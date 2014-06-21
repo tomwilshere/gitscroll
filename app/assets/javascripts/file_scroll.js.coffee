@@ -98,14 +98,12 @@ if window.location.hash
 else
 	jumpTo(hash_array[hash_array.length - 1])
 
-$("#text-smaller").click(() ->
-	newSize = parseInt($(".code-block").css("font-size")) - 1
-	console.log newSize + "px"
+$(".text-smaller").on("click", () ->
+	newSize = parseInt($(".code-block").css("font-size")) - 2
 	$(".code-block").css("font-size", newSize + "px")
-	console.log $(".code-block").css("font-size")
 	)
 
-$("#text-larger").click(() ->
-	newSize = parseInt($(".code-block").css("font-size")) + 1
+$(".text-larger").on("click", () ->
+	newSize = parseInt($(".code-block").css("font-size")) + 2
 	$(".code-block").css("font-size", newSize + "px")
 	)
