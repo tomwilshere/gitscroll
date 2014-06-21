@@ -199,7 +199,7 @@ refreshData = () ->
 		$.getJSON("/projects/" + project.id + ".json", updateLifeline)
 				.error(refreshData)
 	else
-		$('#progress-bar').hide()
+		$('#progress').hide()
 
 updateLifeline = (data) ->
 	window.commits = data.commits

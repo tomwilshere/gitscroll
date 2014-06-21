@@ -1,4 +1,4 @@
-if metric_stats.length == 0
+if metric_stats.length == 0 || window.metrics == undefined
 	$("#file-view-chart").hide()
 	return
 
