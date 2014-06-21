@@ -3,7 +3,7 @@ module ProjectsHelper
   require "#{Rails.root}/app/helpers/metrics_helper"
   include MetricsHelper
 
-  @@visited_blobs = Hash.new
+  @@visited_blobs = {}
 
   def self.get_visited_blobs
     @@visited_blobs
@@ -55,8 +55,14 @@ module ProjectsHelper
       commit.project = project
       commit.git_hash = rugged_commit.oid
       commit.message = rugged_commit.message
-      name =  rugged_commit.author[:name].encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
-      email = rugged_commit.author[:email].encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+      name =  rugged_commit.author[:name]
+        .encode('UTF-8', 'binary', invalid: :replace,
+                                   undef: :replace,
+                                   replace: '')
+      email = rugged_commit.author[:email]
+        .encode('UTF-8', 'binary', invalid: :replace,
+                                   undef: :replace,
+                                   replace: '')
       commit.author = Author.find_or_create_by_name_and_email(name, email)
       commit.date = rugged_commit.author[:time]
       commit.commit_number = count
@@ -73,16 +79,24 @@ module ProjectsHelper
     end
 
     store_min_and_max_metrics(project)
-    project.calculateFilesToFix
+    project.calculate_files_to_fix
   end
 
   def update_commit_metrics(repo, rugged_commit, commit)
-    update_commit_tree(repo, rugged_commit, commit, repo.lookup(rugged_commit.tree.oid), '')
+    update_commit_tree(repo,
+                       rugged_commit,
+                       commit,
+                       repo.lookup(rugged_commit.tree.oid),
+                       '')
   end
 
   def update_commit_tree(repo, rugged_commit, commit, tree, path)
     tree.each_tree do |subtree|
-      update_commit_tree(repo, rugged_commit, commit, repo.lookup(subtree[:oid]), path + subtree[:name] + '/' )
+      update_commit_tree(repo,
+                         rugged_commit,
+                         commit,
+                         repo.lookup(subtree[:oid]),
+                         path + subtree[:name] + '/')
     end
     tree.each_blob do |blob|
       update_commit_file(repo, rugged_commit, commit, blob, path)
@@ -106,15 +120,14 @@ module ProjectsHelper
     end
   end
 
-  def generate_file_metrics(commitFile, fileContents)
-    all_metrics = generate_metrics(fileContents, commitFile.path.split('/').last)
+  def generate_file_metrics(commitFile, contents)
+    all_metrics = generate_metrics(contents, commitFile.path.split('/').last)
     all_metrics.each do |metric_name, score|
-      if score != nil
+      if score
         metric = Metric.find_by_name(metric_name.to_s)
-        file_metric_info = {:commit_file => commitFile,
-                  :score => score,
-                  :metric_id => metric.id,
-                  :project_id => commitFile.project_id}
+        file_metric_info = { commit_file: commitFile, score: score,
+                             metric_id: metric.id,
+                             project_id: commitFile.project_id }
         FileMetric.create(file_metric_info)
       end
     end
@@ -129,14 +142,15 @@ module ProjectsHelper
         min = metrics.map { |fm| fm.score }.min
         max = metrics.map { |fm| fm.score }.max
       end
-      MetricStats.create(:project => project, :metric => metric, :min => min, :max => max)
+      MetricStats.create(project: project, metric: metric, min: min, max: max)
     end
   end
 
   def make_d3_network(commit, tree, currentPath, commitNumber)
     commit_files = commit.project.commit_files
     commit_file_ids = Hash[*commit_files.map { |cf| [cf.id, cf] }.flatten]
-    file_metrics = commit.project.file_metrics.group_by{|fm| fm.commit_file_id }
+    file_metrics = commit.project.file_metrics
+      .group_by { |fm| fm.commit_file_id }
     dataset = {}
     dataset[:hash] = commit[:git_hash]
     dataset[:date] = commit[:date]
@@ -145,7 +159,7 @@ module ProjectsHelper
     dataset[:commit_number] = commitNumber
     nodes = []
     dataset[:edges] = []
-    nodes.push(Hash[:id => tree.oid, :name => currentPath, :path => '', :size => 12])
+    nodes.push(Hash[id: tree.oid, name: currentPath, path: '', size: 12])
     tree.walk(:postorder) do |root, entry|
       parent_oid = (root == '') ? tree.oid : tree.path(root[0..-2])[:oid]
       node_size = (entry[:type] == :blob) ? 4 : 6
@@ -161,8 +175,12 @@ module ProjectsHelper
         end
       end
       id = entry[:oid]
-      nodes.push(Hash[:id => id, :name => entry[:name], :path => path, :size => node_size, :metrics => metrics])
-      dataset[:edges].push(Hash[:source => parent_oid, :target => id])
+      nodes.push(Hash[id: id,
+                      name: entry[:name],
+                      path: path,
+                      size: node_size,
+                      metrics: metrics])
+      dataset[:edges].push(Hash[source: parent_oid, target: id])
     end
     dataset[:nodes] = nodes.sort_by { |e| e[:path] }
     dataset

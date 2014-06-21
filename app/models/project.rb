@@ -19,7 +19,7 @@ class Project < ActiveRecord::Base
     # Make repos directory if it doesn't exist
     Dir.mkdir('repos') unless Dir.exist?('repos')
     Dir.mkdir self.repo_local_url
-    repo = Rugged::Repository.clone_at(self.repo_remote_url, self.repo_local_url)
+    repo = Rugged::Repository.clone_at(repo_remote_url, repo_local_url)
     walker = Rugged::Walker.new(repo)
     walker.sorting(Rugged::SORT_DATE)
     walker.push(repo.head.target)
@@ -47,7 +47,7 @@ class Project < ActiveRecord::Base
     commit_files_by_path = commit_files.group_by { |cf| cf.path }.values
     Metric.all.each do |metric|
       res[metric.id] = commit_files_by_path
-        .map { |cfs| { commit_file: cfs.last.id, score: cfs.last.file_metrics.where(:metric_id => metric.id)[0]? cfs.last.file_metrics.where(:metric_id => metric.id)[0].score : -1 } }
+        .map { |cfs| { commit_file: cfs.last.id, score: cfs.last.file_metrics.where(metric_id: metric.id)[0] ? cfs.last.file_metrics.where(metric_id: metric.id)[0].score : -1 } }
         .group_by { |cf| cf[:score] }.to_a
         .sort_by { |cf| cf[0] }.reverse
       res[metric.id].each_with_index do |files, index|
@@ -57,8 +57,7 @@ class Project < ActiveRecord::Base
       end
     end
 
-    file_hash.to_a.map { |f| { project_id: self.id, commit_id: commit_files.find(f[0]).commit_id, commit_file_id: f[0], path: commit_files.find(f[0]).path, score: f[1] } }
+    file_hash.to_a.map { |f| { project_id: id, commit_id: commit_files.find(f[0]).commit_id, commit_file_id: f[0], path: commit_files.find(f[0]).path, score: f[1] } }
         .each { |f| FixFile.create(f) }
   end
-
 end

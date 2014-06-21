@@ -3,7 +3,8 @@ module MetricsHelper
   def generate_metrics(fileContents, file_name)
     metrics = {}
     Metric.all.each do |metric|
-      if (metric[:extension_list].empty?) || (metric[:extension_list].include? file_name.split('.').last)
+      if (metric[:extension_list].empty?) ||
+         (metric[:extension_list].include? file_name.split('.').last)
         metrics[metric.name] = method(metric.name.to_sym).call(fileContents)
       end
     end
@@ -12,7 +13,8 @@ module MetricsHelper
 
   def create_temp_file(fileContents, fileName)
     temp_file = Tempfile.new(fileName)
-    temp_file.write(fileContents.encode('UTF-8', { :invalid => :replace, :undef => :replace, :replace => '?' }))
+    temp_file.write(fileContents
+      .encode('UTF-8', { invalid: :replace, undef: :replace, replace: '?' }))
     temp_file.rewind
     temp_file
   end
@@ -26,7 +28,7 @@ module MetricsHelper
     $stdin.rewind
     result = nil
     begin
-      flogger = Flog.new :parser => RubyParser
+      flogger = Flog.new parser: RubyParser
       flogger.flog '-'
       result = flogger.total_score
     rescue

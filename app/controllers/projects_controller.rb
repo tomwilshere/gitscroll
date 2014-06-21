@@ -1,5 +1,4 @@
 class ProjectsController < ApplicationController
-
   include ProjectsHelper
   include MetricsHelper
   # GET /projects
@@ -23,7 +22,7 @@ class ProjectsController < ApplicationController
 
     @path = ''
 
-    if params[:path] != nil
+    if params[:path]
       @path = params[:path]
       @path = @path + '.' + params[:format] if params[:format]
       @object = @repo.lookup(@object.path(@path)[:oid])
@@ -45,11 +44,11 @@ class ProjectsController < ApplicationController
     if @object.type == :blob
       view = 'show_file'
 
-      path_commit_files = @project.commit_files.where(:path => @path).sort_by { |cf| cf.commit.date }
+      path_commit_files = @project.commit_files.where(path: @path).sort_by { |cf| cf.commit.date }
 
       @commit_files = Hash[path_commit_files.map { |cf| [cf.commit_id, cf.id] }]
 
-      @fileCommits = Hash[path_commit_files.map { |cf| [cf.commit_id, {:commit => cf.commit, :file_contents => @repo.lookup(cf.git_hash).content }] }]
+      @fileCommits = Hash[path_commit_files.map { |cf| [cf.commit_id, {commit: cf.commit, file_contents: @repo.lookup(cf.git_hash).content }] }]
 
       @individual_file_metrics = Hash[path_commit_files.map { |cf| [cf.git_hash, cf.file_metrics] }]
 
@@ -80,9 +79,17 @@ class ProjectsController < ApplicationController
       @json_metric_stats = MetricStats.all.group_by { |ms| ms.project_id }.to_json
     end
 
+
     respond_to do |format|
-      format.json { render json: { commits: @commits, commit_files: @commit_files, file_metrics: @file_metrics, commit_files_by_path: @commit_files_by_path, authors: @authors } }
-      format.all { render view, :formats => [:html], :content_type => Mime::HTML }
+      format.json do
+        json_data = { commits: @commits,
+                      commit_files: @commit_files,
+                      file_metrics: @file_metrics,
+                      commit_files_by_path: @commit_files_by_path,
+                      authors: @authors }
+        render json: json_data
+      end
+      format.all { render view, formats: [:html], content_type: Mime::HTML }
     end
   end
 
@@ -152,5 +159,4 @@ class ProjectsController < ApplicationController
   def project_params
     params.require(:project).permit(:name, :repo_local_url, :repo_remote_url)
   end
-
 end
