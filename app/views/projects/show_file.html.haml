@@ -43,5 +43,5 @@
 	var file_versions = #{raw @fileCommits.to_a.reverse.to_json}
 	var file_metrics = #{raw @individual_file_metrics.to_json}
 	var metrics = #{raw @metrics.to_json}
-	var commit_files = #{raw @commitFiles.to_json}
+	var commit_files = #{raw @commit_files.to_json}
 	var metric_stats = #{raw @json_metric_stats}
