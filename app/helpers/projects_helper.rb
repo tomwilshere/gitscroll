@@ -1,44 +1,19 @@
 module ProjectsHelper
-
   require "#{Rails.root}/app/helpers/metrics_helper"
   include MetricsHelper
 
-  @@visited_blobs = {}
-
-  def self.get_visited_blobs
-    @@visited_blobs
-  end
-
-  def self.set_visited_blobs(vb)
-    @@visited_blobs = vb
-  end
+  @visited_blobs = {}
 
   def generate_parent_path(path)
-    parent_path = @path.split('/')
+    parent_path = path.split('/')
     parent_path.pop
     parent_path.join('/')
   end
 
-  @@previousFiles = []
-  @@currentFiles = []
+  @previous_files = []
+  @current_files = []
 
-  def self.get_previous_files
-      @@previousFiles
-  end
-
-  def self.set_previous_files(pf)
-      @@previousFiles = pf
-  end
-
-  def self.get_current_files
-      @@currentFiles
-  end
-
-  def self.set_current_files(cf)
-      @@currentFiles = cf
-  end
-
-  def update_metrics(project)
+  def self.update_metrics(project)
     repo = Rugged::Repository.new(project.repo_local_url)
     walker = Rugged::Walker.new(repo)
     walker.sorting(Rugged::SORT_DATE)
@@ -69,13 +44,13 @@ module ProjectsHelper
       commit.save
       # Resque.enqueue(CommitMetricUpdater, commit.id)
       update_commit_metrics(repo, rugged_commit, commit)
-      commit.deleted_files = (ProjectsHelper.get_previous_files - ProjectsHelper.get_current_files).join ','
-      ProjectsHelper.set_previous_files(ProjectsHelper.get_current_files)
-      ProjectsHelper.set_current_files([])
+      commit.deleted_files = (@previous_files - @current_files).join ','
+      @previous_files = @current_files
+      @current_files = []
       commit.save
       puts count
       count += 1
-      puts ProjectsHelper.get_visited_blobs.size
+      puts @visited_blobs.size
     end
 
     store_min_and_max_metrics(project)
@@ -103,12 +78,12 @@ module ProjectsHelper
     end
   end
 
-  def update_commit_file(repo, rugged_commit, commit, blob, path)
+  def self.update_commit_file(repo, rugged_commit, commit, blob, path)
     blob_object = repo.lookup(blob[:oid])
     unless blob_object.binary?
-      ProjectsHelper.get_current_files.push(path + blob[:name])
-      unless ProjectsHelper.get_visited_blobs[blob[:oid]]
-        ProjectsHelper.get_visited_blobs[blob[:oid]] = true
+      @current_files.push(path + blob[:name])
+      unless @visited_blobs[blob[:oid]]
+        @visited_blobs[blob[:oid]] = true
         commit_file = CommitFile.new
         commit_file.git_hash = blob[:oid]
         commit_file.commit_id = rugged_commit.oid

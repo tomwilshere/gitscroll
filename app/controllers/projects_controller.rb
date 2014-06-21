@@ -31,9 +31,6 @@ class ProjectsController < ApplicationController
 
     puts "sort commits #{Time.now.to_f}"
     @commits = @project.commits.order(:date)
-    # if @commits.size >= 1000
-    #   @commits = @commits[@commits.size - 1000, @commits.size]
-    # end
     puts "group commits #{Time.now.to_f}"
     @commit_hash = @commits.group_by { |c| c.git_hash }
     puts "sort commit_files #{Time.now.to_f}"
@@ -45,17 +42,11 @@ class ProjectsController < ApplicationController
       view = 'show_file'
 
       path_commit_files = @project.commit_files.where(path: @path).sort_by { |cf| cf.commit.date }
-
       @commit_files = Hash[path_commit_files.map { |cf| [cf.commit_id, cf.id] }]
-
       @fileCommits = Hash[path_commit_files.map { |cf| [cf.commit_id, {commit: cf.commit, file_contents: @repo.lookup(cf.git_hash).content }] }]
-
       @individual_file_metrics = Hash[path_commit_files.map { |cf| [cf.git_hash, cf.file_metrics] }]
-
       @metrics = Metric.all
-
       @json_metric_stats = @project.metric_stats.to_json
-
       @initial_commit_hash = @fileCommits.keys.last
 
     else
@@ -76,9 +67,9 @@ class ProjectsController < ApplicationController
       @file_metrics = @file_metrics.group_by { |fm| fm.commit_file_id }
       @file_metrics.map { |k,v| @file_metrics[k] = Hash[*v.map { |fm| [fm.metric_id, fm] }.flatten] }
       @authors = Hash[@project.authors.uniq.map { |a| [a.id, { name: a.name, email: a.email, email_md5: Digest::MD5.hexdigest(a.email.strip.downcase) }] }]
-      @json_metric_stats = MetricStats.all.group_by { |ms| ms.project_id }.to_json
+      @json_metric_stats = MetricStats.all
+        .group_by { |ms| ms.project_id }.to_json
     end
-
 
     respond_to do |format|
       format.json do
