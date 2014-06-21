@@ -29,21 +29,21 @@ class ProjectsController < ApplicationController
       @parent_path = generate_parent_path(@path)
     end
 
-    puts "sort commits #{Time.now.to_f}"
     @commits = @project.commits.order(:date)
-    puts "group commits #{Time.now.to_f}"
     @commit_hash = @commits.group_by { |c| c.git_hash }
-    puts "sort commit_files #{Time.now.to_f}"
-    @commit_files = @project.commit_files.sort_by { |cf| @commit_hash[cf.commit_id][0].date }
-    puts "fetch fileMetrics #{Time.now.to_f}"
+    @commit_files = @project.commit_files
+      .sort_by { |cf| @commit_hash[cf.commit_id][0].date }
     @file_metrics = @project.file_metrics
 
     if @object.type == :blob
       view = 'show_file'
 
-      path_commit_files = @project.commit_files.where(path: @path).sort_by { |cf| cf.commit.date }
-      @commit_files = Hash[path_commit_files.map { |cf| [cf.commit_id, cf.id] }]
-      @fileCommits = Hash[path_commit_files.map { |cf| [cf.commit_id, {commit: cf.commit, file_contents: @repo.lookup(cf.git_hash).content }] }]
+      path_commit_files = @project.commit_files
+        .where(path: @path).sort_by { |cf| cf.commit.date }
+      @commit_files = Hash[path_commit_files
+        .map { |cf| [cf.commit_id, cf.id] }]
+      @fileCommits = Hash[path_commit_files
+        .map { |cf| [cf.commit_id, { commit: cf.commit, file_contents: @repo.lookup(cf.git_hash).content }] }]
       @individual_file_metrics = Hash[path_commit_files.map { |cf| [cf.git_hash, cf.file_metrics] }]
       @metrics = Metric.all
       @json_metric_stats = @project.metric_stats.to_json
@@ -55,7 +55,10 @@ class ProjectsController < ApplicationController
 
       puts "generate d3_network #{Time.now.to_f}"
       if @object.type == :tree && @commits.size > 0 && request.format != 'json'
-        @d3_network = make_d3_network(@commits.first, @object, @path, @commits.size).to_json
+        @d3_network = make_d3_network(@commits.first,
+                                      @object,
+                                      @path,
+                                      @commits.size).to_json
       end
 
       puts "fetch files_to_fix #{Time.now.to_f}"
