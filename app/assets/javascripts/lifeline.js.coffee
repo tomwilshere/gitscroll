@@ -194,12 +194,20 @@ $('#gradient-points').on("mousemove", () ->
 	updateGradientCircles()
 	$('#gradient-points-count').html($(this).val()))
 
+newProject = false
+
+refreshPage = () ->
+	location.reload()
+
 refreshData = () ->
 	if commits.length < project.num_commits
+		newProject = true
 		$.getJSON("/projects/" + project.id + ".json", updateLifeline)
 				.error(refreshData)
 	else
 		$('#progress').hide()
+		if newProject
+			window.setTimeout(refreshPage, 5000)
 
 updateLifeline = (data) ->
 	window.commits = data.commits
